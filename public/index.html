@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plex DupeFinder</title>
+  <style>
+    :root {
+      --bg: #13151d;
+      --bg-card: #1e2030;
+      --bg-hover: #262937;
+      --border: #2e3247;
+      --text: #e4e6eb;
+      --text-muted: #7a8299;
+      --accent: #5d9cec;
+      --accent-hover: #4a8ad8;
+      --green: #31a24c;
+      --red: #e4405f;
+      --orange: #ffc230;
+      --plex: #e5a00d;
+      --sonarr: #5d9cec;
+      --radarr: #ffc230;
+      --radius: 8px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ===== NAV ===== */
+    .nav {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      height: 56px;
+      gap: 2rem;
+    }
+
+    .nav-brand {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--plex);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .nav-link {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-link:hover { background: var(--bg-hover); color: var(--text); }
+    .nav-link.active { background: var(--bg); color: var(--text); }
+
+    /* ===== LAYOUT ===== */
+    .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .card-title { font-size: 1rem; font-weight: 600; }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: var(--bg-hover);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+
+    .btn:hover { border-color: var(--accent); }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-danger { background: var(--red); border-color: var(--red); color: #fff; }
+    .btn-danger:hover { opacity: 0.9; }
+    .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ===== FORMS ===== */
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    input[type="text"], input[type="password"], input[type="url"] {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus { border-color: var(--accent); }
+
+    /* ===== STATUS BADGES ===== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-ok { background: rgba(49,162,76,0.15); color: var(--green); }
+    .badge-fail { background: rgba(228,64,95,0.15); color: var(--red); }
+    .badge-none { background: rgba(122,130,153,0.15); color: var(--text-muted); }
+
+    /* ===== DUPLICATE TABLE ===== */
+    .dup-group {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+    }
+
+    .dup-header {
+      padding: 0.75rem 1rem;
+      background: var(--bg-hover);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .dup-header:hover { background: var(--border); }
+
+    .dup-title { font-weight: 600; font-size: 0.9rem; }
+    .dup-sub { color: var(--text-muted); font-size: 0.8rem; }
+
+    .dup-files { display: none; }
+    .dup-group.open .dup-files { display: block; }
+
+    .dup-file {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 1rem;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+
+    .dup-file:last-child { border-bottom: none; }
+
+    .dup-file.recommended {
+      border-left: 3px solid var(--green);
+    }
+
+    .dup-file.inferior {
+      border-left: 3px solid var(--red);
+      opacity: 0.8;
+    }
+
+    .file-path {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      word-break: break-all;
+      margin-top: 0.25rem;
+    }
+
+    .file-meta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .file-meta span { white-space: nowrap; }
+    .file-meta .quality { color: var(--accent); font-weight: 600; }
+    .file-meta .score { color: var(--orange); font-weight: 600; }
+
+    /* ===== STATS BAR ===== */
+    .stats {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .stat-value { font-size: 1.5rem; font-weight: 700; }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+    /* ===== TABS ===== */
+    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+
+    /* ===== LOADING ===== */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-overlay {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 3rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+    }
+
+    .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+
+    /* ===== TOAST ===== */
+    .toast-container {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toast {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      animation: slideIn 0.2s ease-out;
+      max-width: 400px;
+    }
+
+    .toast.success { border-left: 3px solid var(--green); }
+    .toast.error { border-left: 3px solid var(--red); }
+
+    @keyframes slideIn { from { opacity: 0; transform: translateX(1rem); } to { opacity: 1; transform: translateX(0); } }
+
+    /* ===== CONFIRM MODAL ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      max-width: 500px;
+      width: 90%;
+    }
+
+    .modal h3 { margin-bottom: 0.75rem; }
+    .modal p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; }
+    .modal-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .form-row { grid-template-columns: 1fr; }
+      .dup-file { grid-template-columns: 1fr; gap: 0.5rem; }
+      .stats { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#" class="nav-brand" onclick="showPage('scan')">Plex DupeFinder</a>
+  <div class="nav-links">
+    <button class="nav-link active" data-page="scan" onclick="showPage('scan')">Scan</button>
+    <button class="nav-link" data-page="settings" onclick="showPage('settings')">Settings</button>
+  </div>
+</nav>
+
+<div class="toast-container" id="toasts"></div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <h3>Delete File</h3>
+    <p id="confirmText"></p>
+    <div id="confirmPath" style="background:var(--bg);padding:0.5rem 0.75rem;border-radius:var(--radius);font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem;word-break:break-all;"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCAN PAGE ===== -->
+<div class="container page" id="page-scan">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+    <h2>Duplicate Scanner</h2>
+    <div style="display:flex;gap:0.5rem;">
+      <button class="btn btn-primary" id="scanTvBtn" onclick="scanTV()">Scan TV Shows</button>
+      <button class="btn btn-primary" id="scanMovieBtn" onclick="scanMovies()">Scan Movies</button>
+    </div>
+  </div>
+
+  <div class="stats" id="scanStats" style="display:none;">
+    <div class="stat">
+      <div class="stat-value" id="statCount">0</div>
+      <div class="stat-label">Duplicates Found</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="statWaste">0 GB</div>
+      <div class="stat-label">Reclaimable Space</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="statScored">0</div>
+      <div class="stat-label">Scored via Arr</div>
+    </div>
+  </div>
+
+  <div id="scanResults">
+    <div class="empty">
+      <div class="empty-icon">&#128269;</div>
+      <p>Run a scan to find duplicate files in your Plex libraries.</p>
+      <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-muted);">Configure your Plex, Sonarr and Radarr connections in Settings first.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SETTINGS PAGE ===== -->
+<div class="container page" id="page-settings" style="display:none;">
+  <h2 style="margin-bottom:1rem;">Settings</h2>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title" style="color:var(--plex);">Plex</span>
+      <span class="badge badge-none" id="statusPlex">Not tested</span>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Server URL</label>
+        <input type="url" id="plexUrl" placeholder="http://192.168.1.10:32400">
+      </div>
+      <div class="form-group">
+        <label>Token</label>
+        <input type="password" id="plexToken" placeholder="Your Plex token">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title" style="color:var(--sonarr);">Sonarr</span>
+      <span class="badge badge-none" id="statusSonarr">Not tested</span>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Server URL</label>
+        <input type="url" id="sonarrUrl" placeholder="http://192.168.1.10:8989">
+      </div>
+      <div class="form-group">
+        <label>API Key</label>
+        <input type="password" id="sonarrKey" placeholder="Your Sonarr API key">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title" style="color:var(--radarr);">Radarr</span>
+      <span class="badge badge-none" id="statusRadarr">Not tested</span>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Server URL</label>
+        <input type="url" id="radarrUrl" placeholder="http://192.168.1.10:7878">
+      </div>
+      <div class="form-group">
+        <label>API Key</label>
+        <input type="password" id="radarrKey" placeholder="Your Radarr API key">
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:0.5rem;">
+    <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+    <button class="btn" onclick="testConnections()">Test Connections</button>
+  </div>
+</div>
+
+<script>
+// ===== Page Navigation =====
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+  document.getElementById(`page-${page}`).style.display = 'block';
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.page === page));
+}
+
+// ===== Toast =====
+function toast(msg, type = 'success') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+// ===== Modal =====
+function closeModal() {
+  document.getElementById('confirmModal').classList.remove('show');
+}
+
+function confirmDelete(filePath, type, fileId, el) {
+  const modal = document.getElementById('confirmModal');
+  document.getElementById('confirmText').textContent = `Are you sure you want to delete this file? This cannot be undone.`;
+  document.getElementById('confirmPath').textContent = filePath;
+  modal.classList.add('show');
+
+  const btn = document.getElementById('confirmDeleteBtn');
+  btn.onclick = async () => {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Deleting...';
+    try {
+      const endpoint = type === 'tv' ? `/api/file/tv/${fileId}` : `/api/file/movie/${fileId}`;
+      const res = await fetch(endpoint, { method: 'DELETE' });
+      if (!res.ok) throw new Error((await res.json()).error);
+      toast('File deleted successfully');
+      // Remove the file row from the UI
+      if (el) {
+        const group = el.closest('.dup-group');
+        el.remove();
+        // If only 1 file left, remove the whole group
+        if (group && group.querySelectorAll('.dup-file').length < 2) {
+          group.remove();
+          updateStats();
+        }
+      }
+    } catch (err) {
+      toast(`Delete failed: ${err.message}`, 'error');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Delete';
+    closeModal();
+  };
+}
+
+// ===== Settings =====
+async function loadSettings() {
+  try {
+    const res = await fetch('/api/settings');
+    const cfg = await res.json();
+    document.getElementById('plexUrl').value = cfg.plex.url;
+    document.getElementById('plexToken').value = cfg.plex.token;
+    document.getElementById('sonarrUrl').value = cfg.sonarr.url;
+    document.getElementById('sonarrKey').value = cfg.sonarr.apiKey;
+    document.getElementById('radarrUrl').value = cfg.radarr.url;
+    document.getElementById('radarrKey').value = cfg.radarr.apiKey;
+  } catch {}
+}
+
+async function saveSettings() {
+  try {
+    const res = await fetch('/api/settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        plex: { url: document.getElementById('plexUrl').value, token: document.getElementById('plexToken').value },
+        sonarr: { url: document.getElementById('sonarrUrl').value, apiKey: document.getElementById('sonarrKey').value },
+        radarr: { url: document.getElementById('radarrUrl').value, apiKey: document.getElementById('radarrKey').value }
+      })
+    });
+    if (!res.ok) throw new Error();
+    toast('Settings saved');
+  } catch {
+    toast('Failed to save settings', 'error');
+  }
+}
+
+async function testConnections() {
+  const setBadge = (id, ok) => {
+    const el = document.getElementById(id);
+    if (ok === null) { el.className = 'badge badge-none'; el.textContent = 'Not configured'; return; }
+    el.className = ok ? 'badge badge-ok' : 'badge badge-fail';
+    el.textContent = ok ? 'Connected' : 'Failed';
+  };
+
+  setBadge('statusPlex', null);
+  setBadge('statusSonarr', null);
+  setBadge('statusRadarr', null);
+
+  try {
+    const res = await fetch('/api/settings/test', { method: 'POST' });
+    const r = await res.json();
+    setBadge('statusPlex', document.getElementById('plexUrl').value ? r.plex : null);
+    setBadge('statusSonarr', document.getElementById('sonarrUrl').value ? r.sonarr : null);
+    setBadge('statusRadarr', document.getElementById('radarrUrl').value ? r.radarr : null);
+    toast('Connection test complete');
+  } catch {
+    toast('Connection test failed', 'error');
+  }
+}
+
+// ===== Scanning =====
+let currentScanType = null;
+
+function formatSize(bytes) {
+  if (!bytes) return '0 B';
+  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+  let i = 0;
+  let size = bytes;
+  while (size >= 1024 && i < units.length - 1) { size /= 1024; i++; }
+  return `${size.toFixed(size < 10 ? 2 : 1)} ${units[i]}`;
+}
+
+function updateStats() {
+  const groups = document.querySelectorAll('.dup-group');
+  const count = groups.length;
+  let waste = 0;
+  let scored = 0;
+
+  groups.forEach(g => {
+    const files = g.querySelectorAll('.dup-file');
+    const sizes = [];
+    files.forEach(f => {
+      const s = parseInt(f.dataset.size || 0);
+      sizes.push(s);
+      if (f.dataset.scored === 'true') scored++;
+    });
+    // Reclaimable = all sizes except the largest
+    sizes.sort((a, b) => b - a);
+    for (let i = 1; i < sizes.length; i++) waste += sizes[i];
+  });
+
+  document.getElementById('statCount').textContent = count;
+  document.getElementById('statWaste').textContent = formatSize(waste);
+  document.getElementById('statScored').textContent = scored;
+  document.getElementById('scanStats').style.display = count > 0 ? 'flex' : 'none';
+}
+
+function renderDuplicates(duplicates, type, fileScores) {
+  const container = document.getElementById('scanResults');
+
+  if (!duplicates.length) {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">&#10004;</div><p>No duplicates found!</p></div>';
+    document.getElementById('scanStats').style.display = 'none';
+    return;
+  }
+
+  let html = '';
+
+  for (const dup of duplicates) {
+    let label;
+    if (type === 'tv') {
+      label = `${dup.show} - S${String(dup.season).padStart(2,'0')}E${String(dup.episode).padStart(2,'0')} - ${dup.title}`;
+    } else {
+      label = `${dup.title}${dup.year ? ` (${dup.year})` : ''}`;
+    }
+
+    // Score each file
+    const scored = dup.files.map(f => {
+      const score = fileScores?.[f.file];
+      return { ...f, score };
+    });
+
+    // Sort by quality weight descending (best first)
+    scored.sort((a, b) => {
+      const wA = a.score?.qualityWeight ?? -1;
+      const wB = b.score?.qualityWeight ?? -1;
+      if (wB !== wA) return wB - wA;
+      // Tie-break: custom format score, then file size
+      const cfA = a.score?.customFormatScore ?? 0;
+      const cfB = b.score?.customFormatScore ?? 0;
+      if (cfB !== cfA) return cfB - cfA;
+      return (b.size || 0) - (a.size || 0);
+    });
+
+    html += `<div class="dup-group">`;
+    html += `<div class="dup-header" onclick="this.parentElement.classList.toggle('open')">`;
+    html += `<div><div class="dup-title">${escHtml(label)}</div>`;
+    html += `<div class="dup-sub">${dup.library} &middot; ${scored.length} files</div></div>`;
+    html += `<div class="dup-sub">${formatSize(scored.reduce((s,f) => s + (f.size||0), 0))} total</div>`;
+    html += `</div>`;
+    html += `<div class="dup-files">`;
+
+    scored.forEach((f, i) => {
+      const isBest = i === 0;
+      const cls = isBest ? 'recommended' : 'inferior';
+      const hasScore = !!f.score;
+      const fileId = f.score?.episodeFileId || f.score?.movieFileId;
+      const qualityName = f.score?.qualityName || f.videoResolution || '?';
+      const weight = f.score?.qualityWeight ?? '—';
+      const cfScore = f.score?.customFormatScore ?? 0;
+
+      html += `<div class="dup-file ${cls}" data-size="${f.size||0}" data-scored="${hasScore}">`;
+      html += `<div>`;
+      html += `<div style="display:flex;align-items:center;gap:0.5rem;">`;
+      html += isBest ? `<span class="badge badge-ok">KEEP</span>` : `<span class="badge badge-fail">DUPE</span>`;
+      html += `<span style="font-weight:600;">${escHtml(f.file.split('/').pop())}</span>`;
+      html += `</div>`;
+      html += `<div class="file-path">${escHtml(f.file)}</div>`;
+      html += `<div class="file-meta" style="margin-top:0.4rem;">`;
+      html += `<span class="quality">${escHtml(qualityName)}</span>`;
+      html += `<span class="score">Weight: ${weight}</span>`;
+      if (cfScore) html += `<span class="score">CF: +${cfScore}</span>`;
+      html += `<span>${escHtml(f.videoCodec || '?')} / ${escHtml(f.audioCodec || '?')} ${f.audioChannels || ''}ch</span>`;
+      html += `<span>${f.width || '?'}x${f.height || '?'}</span>`;
+      html += `<span>${formatSize(f.size)}</span>`;
+      if (f.bitrate) html += `<span>${Math.round(f.bitrate/1000)} Mbps</span>`;
+      html += `</div></div>`;
+      html += `<div>`;
+      if (!isBest && fileId) {
+        html += `<button class="btn btn-danger btn-sm" onclick="confirmDelete('${escAttr(f.file)}','${type}','${fileId}',this.closest('.dup-file'))">Delete</button>`;
+      }
+      html += `</div></div>`;
+    });
+
+    html += `</div></div>`;
+  }
+
+  container.innerHTML = html;
+  updateStats();
+}
+
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s || '';
+  return d.innerHTML;
+}
+
+function escAttr(s) {
+  return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+async function scanTV() {
+  const btn = document.getElementById('scanTvBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Scanning TV...';
+  document.getElementById('scanResults').innerHTML = '<div class="loading-overlay"><span class="spinner"></span> Scanning Plex for duplicate TV episodes...</div>';
+  currentScanType = 'tv';
+
+  try {
+    const [dupsRes, scoresRes] = await Promise.all([
+      fetch('/api/scan/tv'),
+      fetch('/api/score/tv').catch(() => ({ ok: false }))
+    ]);
+
+    if (!dupsRes.ok) throw new Error((await dupsRes.json()).error);
+
+    const { duplicates } = await dupsRes.json();
+    const scores = scoresRes.ok ? (await scoresRes.json()).fileScores : {};
+
+    renderDuplicates(duplicates, 'tv', scores);
+    toast(`Found ${duplicates.length} duplicate${duplicates.length === 1 ? '' : 's'}`);
+  } catch (err) {
+    document.getElementById('scanResults').innerHTML = `<div class="empty"><div class="empty-icon">&#9888;</div><p>${escHtml(err.message)}</p></div>`;
+    toast(err.message, 'error');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Scan TV Shows';
+}
+
+async function scanMovies() {
+  const btn = document.getElementById('scanMovieBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Scanning Movies...';
+  document.getElementById('scanResults').innerHTML = '<div class="loading-overlay"><span class="spinner"></span> Scanning Plex for duplicate movies...</div>';
+  currentScanType = 'movies';
+
+  try {
+    const [dupsRes, scoresRes] = await Promise.all([
+      fetch('/api/scan/movies'),
+      fetch('/api/score/movies').catch(() => ({ ok: false }))
+    ]);
+
+    if (!dupsRes.ok) throw new Error((await dupsRes.json()).error);
+
+    const { duplicates } = await dupsRes.json();
+    const scores = scoresRes.ok ? (await scoresRes.json()).fileScores : {};
+
+    renderDuplicates(duplicates, 'movies', scores);
+    toast(`Found ${duplicates.length} duplicate${duplicates.length === 1 ? '' : 's'}`);
+  } catch (err) {
+    document.getElementById('scanResults').innerHTML = `<div class="empty"><div class="empty-icon">&#9888;</div><p>${escHtml(err.message)}</p></div>`;
+    toast(err.message, 'error');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Scan Movies';
+}
+
+// Init
+loadSettings();
+</script>
+
+</body>
+</html>

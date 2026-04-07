@@ -1,0 +1,16 @@
+{
+  "name": "plex-dupefinder",
+  "version": "1.0.0",
+  "description": "Find and remove duplicate media files using Plex detection and Sonarr/Radarr quality scoring",
+  "main": "server.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "keywords": ["plex", "sonarr", "radarr", "duplicates", "media", "unraid"],
+  "author": "TehRobot-Assistant",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

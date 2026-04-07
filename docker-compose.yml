@@ -1,0 +1,11 @@
+services:
+  plex-dupefinder:
+    build: .
+    container_name: plex-dupefinder
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config:/config
+    environment:
+      - PORT=3000
+    restart: unless-stopped
