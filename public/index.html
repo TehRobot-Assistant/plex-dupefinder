@@ -309,6 +309,16 @@ function updateBulkBar() {
   const n = document.querySelectorAll('.file-select:checked').length;
   document.getElementById('bulkCount').textContent = n;
   document.getElementById('bulkBar').classList.toggle('show', n > 0);
+  // Sync show-level checkboxes
+  document.querySelectorAll('.show-group').forEach(sg => {
+    const cb = sg.querySelector('.show-cb');
+    if (!cb) return;
+    const all = sg.querySelectorAll('.dup-file.inferior .file-select');
+    const checked = sg.querySelectorAll('.dup-file.inferior .file-select:checked');
+    if (all.length === 0) { cb.checked = false; cb.indeterminate = false; return; }
+    cb.checked = checked.length === all.length;
+    cb.indeterminate = checked.length > 0 && checked.length < all.length;
+  });
 }
 
 function selectAllInferior() {
