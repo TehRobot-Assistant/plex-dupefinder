@@ -18,98 +18,25 @@
       --red: #e4405f;
       --orange: #ffc230;
       --plex: #e5a00d;
-      --sonarr: #5d9cec;
-      --radarr: #ffc230;
       --radius: 8px;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    /* ===== NAV ===== */
-    .nav {
-      background: var(--bg-card);
-      border-bottom: 1px solid var(--border);
-      padding: 0 1.5rem;
-      display: flex;
-      align-items: center;
-      height: 56px;
-      gap: 2rem;
-    }
-
-    .nav-brand {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--plex);
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 0.25rem;
-    }
-
-    .nav-link {
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius);
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      border: none;
-      background: none;
-      transition: background 0.15s, color 0.15s;
-    }
-
+    .nav { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; height: 56px; gap: 2rem; }
+    .nav-brand { font-size: 1.1rem; font-weight: 700; color: var(--plex); text-decoration: none; white-space: nowrap; }
+    .nav-links { display: flex; gap: 0.25rem; }
+    .nav-link { padding: 0.5rem 1rem; border-radius: var(--radius); color: var(--text-muted); font-size: 0.9rem; font-weight: 500; cursor: pointer; border: none; background: none; transition: background 0.15s, color 0.15s; }
     .nav-link:hover { background: var(--bg-hover); color: var(--text); }
     .nav-link.active { background: var(--bg); color: var(--text); }
 
-    /* ===== LAYOUT ===== */
     .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
 
-    /* ===== CARDS ===== */
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.25rem;
-      margin-bottom: 1rem;
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
     .card-title { font-size: 1rem; font-weight: 600; }
 
-    /* ===== BUTTONS ===== */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius);
-      font-size: 0.85rem;
-      font-weight: 500;
-      border: 1px solid var(--border);
-      background: var(--bg-hover);
-      color: var(--text);
-      cursor: pointer;
-      transition: all 0.15s;
-      text-decoration: none;
-    }
-
+    .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: var(--radius); font-size: 0.85rem; font-weight: 500; border: 1px solid var(--border); background: var(--bg-hover); color: var(--text); cursor: pointer; transition: all 0.15s; text-decoration: none; }
     .btn:hover { border-color: var(--accent); }
     .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
     .btn-primary:hover { background: var(--accent-hover); }
@@ -118,293 +45,100 @@
     .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* ===== FORMS ===== */
     .form-group { margin-bottom: 1rem; }
     .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.3rem; }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    input[type="text"], input[type="password"], input[type="url"] {
-      width: 100%;
-      padding: 0.5rem 0.75rem;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--text);
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    input[type="text"], input[type="password"], input[type="url"] { width: 100%; padding: 0.5rem 0.75rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 0.9rem; outline: none; }
     input:focus { border-color: var(--accent); }
 
-    /* ===== STATUS BADGES ===== */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
+    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
     .badge-ok { background: rgba(49,162,76,0.15); color: var(--green); }
     .badge-fail { background: rgba(228,64,95,0.15); color: var(--red); }
     .badge-none { background: rgba(122,130,153,0.15); color: var(--text-muted); }
+    .badge-warn { background: rgba(255,194,48,0.15); color: var(--orange); }
+    .badge-safe { background: rgba(49,162,76,0.15); color: var(--green); }
 
-    /* ===== DUPLICATE TABLE ===== */
-    .dup-group {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      margin-bottom: 0.75rem;
-      overflow: hidden;
-    }
-
-    .dup-header {
-      padding: 0.75rem 1rem;
-      background: var(--bg-hover);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-    }
-
-    .dup-header:hover { background: var(--border); }
-
-    .dup-title { font-weight: 600; font-size: 0.9rem; }
-    .dup-sub { color: var(--text-muted); font-size: 0.8rem; }
-
-    .dup-files { display: none; }
-    .dup-group.open .dup-files { display: block; }
-
-    .dup-file {
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid var(--border);
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 1rem;
-      align-items: center;
-      font-size: 0.85rem;
-    }
-
-    .dup-file:last-child { border-bottom: none; }
-
-    .dup-file.recommended {
-      border-left: 3px solid var(--green);
-    }
-
-    .dup-file.inferior {
-      border-left: 3px solid var(--red);
-      opacity: 0.8;
-    }
-
-    .file-path {
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      word-break: break-all;
-      margin-top: 0.25rem;
-    }
-
-    .file-meta {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .file-meta span { white-space: nowrap; }
-    .file-meta .quality { color: var(--accent); font-weight: 600; }
-    .file-meta .score { color: var(--orange); font-weight: 600; }
-
-    /* ===== STATS BAR ===== */
-    .stats {
-      display: flex;
-      gap: 1.5rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .stat {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem 1.25rem;
-      flex: 1;
-      min-width: 150px;
-    }
-
+    .stats { display: flex; gap: 1.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; flex: 1; min-width: 150px; }
     .stat-value { font-size: 1.5rem; font-weight: 700; }
     .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
 
-    /* ===== TABS / FILTER BAR ===== */
-    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-
-    .filter-bar {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .filter-btn {
-      padding: 0.4rem 0.8rem;
-      border-radius: var(--radius);
-      font-size: 0.8rem;
-      font-weight: 500;
-      border: 1px solid var(--border);
-      background: var(--bg-card);
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
+    /* Filter + Sort bar */
+    .toolbar { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+    .filter-btn { padding: 0.4rem 0.8rem; border-radius: var(--radius); font-size: 0.8rem; font-weight: 500; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
     .filter-btn:hover { border-color: var(--accent); color: var(--text); }
     .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .toolbar-sep { width: 1px; height: 24px; background: var(--border); margin: 0 0.25rem; }
+    .sort-select { padding: 0.4rem 0.6rem; border-radius: var(--radius); font-size: 0.8rem; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-muted); cursor: pointer; outline: none; }
+    .sort-select:focus { border-color: var(--accent); }
 
-    .filter-count {
-      font-size: 0.75rem;
-      opacity: 0.7;
-      margin-left: 0.2rem;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin: 1.25rem 0 0.5rem;
-      padding-bottom: 0.4rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .section-header h3 { font-size: 0.95rem; font-weight: 600; }
-
-    .section-header .badge-warn {
-      background: rgba(255,194,48,0.15);
-      color: var(--orange);
-    }
-
-    .section-header .badge-safe {
-      background: rgba(49,162,76,0.15);
-      color: var(--green);
-    }
-
-    .bulk-bar {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      margin-bottom: 0.75rem;
-      padding: 0.5rem 0.75rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-    }
-
+    /* Bulk bar */
+    .bulk-bar { display: none; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem; padding: 0.5rem 0.75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); }
+    .bulk-bar.show { display: flex; }
     .bulk-bar span { font-size: 0.85rem; color: var(--text-muted); flex: 1; }
 
-    .dup-file .file-select {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--accent);
-      cursor: pointer;
-    }
+    /* Show group (parent) */
+    .show-group { margin-bottom: 1rem; }
+    .show-header { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0; cursor: pointer; user-select: none; }
+    .show-header:hover { background: var(--bg-hover); }
+    .show-header .arrow { transition: transform 0.2s; font-size: 0.7rem; color: var(--text-muted); }
+    .show-group.open .show-header .arrow { transform: rotate(90deg); }
+    .show-header .show-cb { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+    .show-title { font-weight: 600; font-size: 0.95rem; flex: 1; }
+    .show-meta { display: flex; gap: 1rem; font-size: 0.8rem; color: var(--text-muted); }
+    .show-meta .waste { color: var(--red); font-weight: 600; }
+    .show-episodes { display: none; border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius) var(--radius); }
+    .show-group.open .show-episodes { display: block; }
 
-    /* ===== LOADING ===== */
-    .spinner {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-    }
+    /* Episode group (child) */
+    .dup-group { background: var(--bg-card); border-bottom: 1px solid var(--border); }
+    .dup-group:last-child { border-bottom: none; }
+    .dup-header { padding: 0.6rem 1rem 0.6rem 2.5rem; background: var(--bg-hover); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 0.85rem; }
+    .dup-header:hover { background: var(--border); }
+    .dup-title { font-weight: 600; font-size: 0.85rem; }
+    .dup-sub { color: var(--text-muted); font-size: 0.8rem; }
+    .dup-files { display: none; }
+    .dup-group.open .dup-files { display: block; }
 
+    .dup-file { padding: 0.6rem 1rem 0.6rem 2.5rem; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 1fr auto; gap: 0.75rem; align-items: center; font-size: 0.85rem; }
+    .dup-file:last-child { border-bottom: none; }
+    .dup-file.recommended { border-left: 3px solid var(--green); }
+    .dup-file.inferior { border-left: 3px solid var(--red); opacity: 0.85; }
+    .file-path { color: var(--text-muted); font-size: 0.75rem; word-break: break-all; margin-top: 0.2rem; }
+    .file-meta { display: flex; gap: 0.75rem; flex-wrap: wrap; font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem; }
+    .file-meta span { white-space: nowrap; }
+    .file-meta .quality { color: var(--accent); font-weight: 600; }
+    .file-meta .score { color: var(--orange); font-weight: 600; }
+    .file-select { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+
+    /* Section headers */
+    .section-header { display: flex; align-items: center; gap: 0.5rem; margin: 1.25rem 0 0.5rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+    .section-header h3 { font-size: 0.95rem; font-weight: 600; }
+
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    .loading-overlay {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 3rem;
-      color: var(--text-muted);
-    }
-
-    /* ===== EMPTY STATE ===== */
-    .empty {
-      text-align: center;
-      padding: 3rem;
-      color: var(--text-muted);
-    }
-
+    .loading-overlay { display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 3rem; color: var(--text-muted); }
+    .empty { text-align: center; padding: 3rem; color: var(--text-muted); }
     .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; }
 
-    /* ===== TOAST ===== */
-    .toast-container {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .toast {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 0.75rem 1rem;
-      font-size: 0.85rem;
-      animation: slideIn 0.2s ease-out;
-      max-width: 400px;
-    }
-
+    .toast-container { position: fixed; top: 1rem; right: 1rem; z-index: 1000; display: flex; flex-direction: column; gap: 0.5rem; }
+    .toast { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem 1rem; font-size: 0.85rem; animation: slideIn 0.2s ease-out; max-width: 400px; }
     .toast.success { border-left: 3px solid var(--green); }
     .toast.error { border-left: 3px solid var(--red); }
-
     @keyframes slideIn { from { opacity: 0; transform: translateX(1rem); } to { opacity: 1; transform: translateX(0); } }
 
-    /* ===== CONFIRM MODAL ===== */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      z-index: 999;
-      align-items: center;
-      justify-content: center;
-    }
-
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 999; align-items: center; justify-content: center; }
     .modal-overlay.show { display: flex; }
-
-    .modal {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      max-width: 500px;
-      width: 90%;
-    }
-
+    .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; max-width: 500px; width: 90%; }
     .modal h3 { margin-bottom: 0.75rem; }
     .modal p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; }
     .modal-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
 
-    /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
       .form-row { grid-template-columns: 1fr; }
       .dup-file { grid-template-columns: 1fr; gap: 0.5rem; }
       .stats { flex-direction: column; }
+      .show-meta { flex-direction: column; gap: 0.25rem; }
     }
   </style>
 </head>
@@ -420,12 +154,10 @@
 
 <div class="toast-container" id="toasts"></div>
 
-<!-- Confirm Modal -->
 <div class="modal-overlay" id="confirmModal">
   <div class="modal">
-    <h3>Delete File</h3>
+    <h3 id="modalTitle">Delete File</h3>
     <p id="confirmText"></p>
-    <div id="confirmPath" style="background:var(--bg);padding:0.5rem 0.75rem;border-radius:var(--radius);font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem;word-break:break-all;"></div>
     <div class="modal-actions">
       <button class="btn" onclick="closeModal()">Cancel</button>
       <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
@@ -433,7 +165,7 @@
   </div>
 </div>
 
-<!-- ===== SCAN PAGE ===== -->
+<!-- SCAN PAGE -->
 <div class="container page" id="page-scan">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
     <h2>Duplicate Scanner</h2>
@@ -444,31 +176,33 @@
   </div>
 
   <div class="stats" id="scanStats" style="display:none;">
-    <div class="stat">
-      <div class="stat-value" id="statCount">0</div>
-      <div class="stat-label">Duplicates Found</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value" id="statWaste">0 GB</div>
-      <div class="stat-label">Reclaimable Space</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value" id="statScored">0</div>
-      <div class="stat-label">Scored via Arr</div>
-    </div>
+    <div class="stat"><div class="stat-value" id="statCount">0</div><div class="stat-label">Duplicates Found</div></div>
+    <div class="stat"><div class="stat-value" id="statWaste">0 GB</div><div class="stat-label">Reclaimable Space</div></div>
+    <div class="stat"><div class="stat-value" id="statScored">0</div><div class="stat-label">Scored via Arr</div></div>
   </div>
 
-  <div class="filter-bar" id="filterBar" style="display:none;">
+  <div class="toolbar" id="toolbar" style="display:none;">
     <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">All <span class="filter-count" id="filterCountAll"></span></button>
     <button class="filter-btn" data-filter="same" onclick="setFilter('same')">Same Folder <span class="filter-count" id="filterCountSame"></span></button>
     <button class="filter-btn" data-filter="diff" onclick="setFilter('diff')">Different Folders <span class="filter-count" id="filterCountDiff"></span></button>
-  </div>
-
-  <div class="bulk-bar" id="bulkBar" style="display:none;">
-    <span><strong id="bulkCount">0</strong> files selected</span>
-    <button class="btn btn-danger btn-sm" onclick="bulkDelete()">Delete Selected</button>
+    <div class="toolbar-sep"></div>
+    <label style="font-size:0.8rem;color:var(--text-muted);">Sort:</label>
+    <select class="sort-select" id="sortSelect" onchange="applySort()">
+      <option value="dupes-desc">Most Dupes</option>
+      <option value="dupes-asc">Fewest Dupes</option>
+      <option value="size-desc">Largest Waste</option>
+      <option value="size-asc">Smallest Waste</option>
+      <option value="name-asc">Name A-Z</option>
+      <option value="name-desc">Name Z-A</option>
+    </select>
+    <div class="toolbar-sep"></div>
     <button class="btn btn-sm" onclick="selectAllInferior()">Select All Dupes</button>
     <button class="btn btn-sm" onclick="clearSelection()">Clear</button>
+  </div>
+
+  <div class="bulk-bar" id="bulkBar">
+    <span><strong id="bulkCount">0</strong> files selected</span>
+    <button class="btn btn-danger btn-sm" onclick="bulkDelete()">Delete Selected</button>
   </div>
 
   <div id="scanResults">
@@ -480,61 +214,30 @@
   </div>
 </div>
 
-<!-- ===== SETTINGS PAGE ===== -->
+<!-- SETTINGS PAGE -->
 <div class="container page" id="page-settings" style="display:none;">
   <h2 style="margin-bottom:1rem;">Settings</h2>
-
   <div class="card">
-    <div class="card-header">
-      <span class="card-title" style="color:var(--plex);">Plex</span>
-      <span class="badge badge-none" id="statusPlex">Not tested</span>
-    </div>
+    <div class="card-header"><span class="card-title" style="color:var(--plex);">Plex</span><span class="badge badge-none" id="statusPlex">Not tested</span></div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Server URL</label>
-        <input type="url" id="plexUrl" placeholder="http://192.168.1.10:32400">
-      </div>
-      <div class="form-group">
-        <label>Token</label>
-        <input type="password" id="plexToken" placeholder="Your Plex token">
-      </div>
+      <div class="form-group"><label>Server URL</label><input type="url" id="plexUrl" placeholder="http://192.168.1.10:32400"></div>
+      <div class="form-group"><label>Token</label><input type="password" id="plexToken" placeholder="Your Plex token"></div>
     </div>
   </div>
-
   <div class="card">
-    <div class="card-header">
-      <span class="card-title" style="color:var(--sonarr);">Sonarr</span>
-      <span class="badge badge-none" id="statusSonarr">Not tested</span>
-    </div>
+    <div class="card-header"><span class="card-title" style="color:var(--accent);">Sonarr</span><span class="badge badge-none" id="statusSonarr">Not tested</span></div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Server URL</label>
-        <input type="url" id="sonarrUrl" placeholder="http://192.168.1.10:8989">
-      </div>
-      <div class="form-group">
-        <label>API Key</label>
-        <input type="password" id="sonarrKey" placeholder="Your Sonarr API key">
-      </div>
+      <div class="form-group"><label>Server URL</label><input type="url" id="sonarrUrl" placeholder="http://192.168.1.10:8989"></div>
+      <div class="form-group"><label>API Key</label><input type="password" id="sonarrKey" placeholder="Your Sonarr API key"></div>
     </div>
   </div>
-
   <div class="card">
-    <div class="card-header">
-      <span class="card-title" style="color:var(--radarr);">Radarr</span>
-      <span class="badge badge-none" id="statusRadarr">Not tested</span>
-    </div>
+    <div class="card-header"><span class="card-title" style="color:var(--orange);">Radarr</span><span class="badge badge-none" id="statusRadarr">Not tested</span></div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Server URL</label>
-        <input type="url" id="radarrUrl" placeholder="http://192.168.1.10:7878">
-      </div>
-      <div class="form-group">
-        <label>API Key</label>
-        <input type="password" id="radarrKey" placeholder="Your Radarr API key">
-      </div>
+      <div class="form-group"><label>Server URL</label><input type="url" id="radarrUrl" placeholder="http://192.168.1.10:7878"></div>
+      <div class="form-group"><label>API Key</label><input type="password" id="radarrKey" placeholder="Your Radarr API key"></div>
     </div>
   </div>
-
   <div style="display:flex;gap:0.5rem;">
     <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
     <button class="btn" onclick="testConnections()">Test Connections</button>
@@ -542,7 +245,12 @@
 </div>
 
 <script>
-// ===== Page Navigation =====
+// ===== State =====
+let currentScanType = null;
+let currentFilter = 'all';
+let scanData = []; // raw classified data for re-sorting
+
+// ===== Nav =====
 function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
   document.getElementById(`page-${page}`).style.display = 'block';
@@ -559,18 +267,13 @@ function toast(msg, type = 'success') {
 }
 
 // ===== Modal =====
-function closeModal() {
-  document.getElementById('confirmModal').classList.remove('show');
-}
+function closeModal() { document.getElementById('confirmModal').classList.remove('show'); }
 
 function confirmDelete(filePath, deleteType, deleteId, ratingKey, mediaId, el) {
-  const modal = document.getElementById('confirmModal');
-  document.getElementById('confirmText').textContent = 'Are you sure you want to delete this file? This cannot be undone.';
-  document.getElementById('confirmPath').textContent = filePath;
-  modal.classList.add('show');
-
-  const btn = document.getElementById('confirmDeleteBtn');
-  btn.onclick = () => doDelete(deleteType, deleteId, ratingKey, mediaId, el);
+  document.getElementById('modalTitle').textContent = 'Delete File';
+  document.getElementById('confirmText').textContent = `Delete this file? This cannot be undone.\n\n${filePath.split('/').pop()}`;
+  document.getElementById('confirmModal').classList.add('show');
+  document.getElementById('confirmDeleteBtn').onclick = () => doDelete(deleteType, deleteId, ratingKey, mediaId, el);
 }
 
 async function doDelete(deleteType, deleteId, ratingKey, mediaId, el) {
@@ -582,65 +285,64 @@ async function doDelete(deleteType, deleteId, ratingKey, mediaId, el) {
     if (deleteType === 'sonarr') endpoint = `/api/file/tv/${deleteId}`;
     else if (deleteType === 'radarr') endpoint = `/api/file/movie/${deleteId}`;
     else endpoint = `/api/file/plex/${ratingKey}/${mediaId}`;
-
     const res = await fetch(endpoint, { method: 'DELETE' });
     if (!res.ok) throw new Error((await res.json()).error);
-    toast('File deleted successfully');
+    toast('File deleted');
     if (el) {
       const group = el.closest('.dup-group');
       el.remove();
       if (group && group.querySelectorAll('.dup-file').length < 2) {
         group.remove();
-        updateFilterCounts();
-        updateStats();
+        refreshShowHeaders();
       }
     }
-  } catch (err) {
-    toast(`Delete failed: ${err.message}`, 'error');
-  }
+  } catch (err) { toast(`Delete failed: ${err.message}`, 'error'); }
   btn.disabled = false;
   btn.textContent = 'Delete';
   closeModal();
+  updateBulkBar();
+  updateStats();
 }
 
-// ===== Selection / Bulk =====
+// ===== Bulk =====
 function updateBulkBar() {
-  const checked = document.querySelectorAll('.file-select:checked');
-  const bar = document.getElementById('bulkBar');
-  document.getElementById('bulkCount').textContent = checked.length;
-  bar.style.display = checked.length > 0 ? 'flex' : 'none';
+  const n = document.querySelectorAll('.file-select:checked').length;
+  document.getElementById('bulkCount').textContent = n;
+  document.getElementById('bulkBar').classList.toggle('show', n > 0);
 }
 
 function selectAllInferior() {
-  const visible = currentFilter;
-  document.querySelectorAll('.dup-group').forEach(g => {
-    if (visible !== 'all' && g.dataset.folderType !== visible) return;
-    g.querySelectorAll('.dup-file.inferior .file-select').forEach(cb => cb.checked = true);
+  document.querySelectorAll('.show-group').forEach(sg => {
+    if (sg.style.display === 'none') return;
+    sg.querySelectorAll('.dup-file.inferior .file-select').forEach(cb => cb.checked = true);
   });
   updateBulkBar();
 }
 
 function clearSelection() {
   document.querySelectorAll('.file-select').forEach(cb => cb.checked = false);
+  document.querySelectorAll('.show-cb').forEach(cb => cb.checked = false);
+  updateBulkBar();
+}
+
+function toggleShowSelect(cb, showGroup) {
+  const boxes = showGroup.querySelectorAll('.dup-file.inferior .file-select');
+  boxes.forEach(b => b.checked = cb.checked);
   updateBulkBar();
 }
 
 async function bulkDelete() {
   const checked = [...document.querySelectorAll('.file-select:checked')];
   if (!checked.length) return;
-
-  const modal = document.getElementById('confirmModal');
+  document.getElementById('modalTitle').textContent = 'Bulk Delete';
   document.getElementById('confirmText').textContent = `Delete ${checked.length} selected file${checked.length === 1 ? '' : 's'}? This cannot be undone.`;
-  document.getElementById('confirmPath').textContent = checked.map(cb => cb.closest('.dup-file').dataset.filename).join('\n');
-  modal.classList.add('show');
+  document.getElementById('confirmModal').classList.add('show');
 
-  const btn = document.getElementById('confirmDeleteBtn');
-  btn.onclick = async () => {
+  document.getElementById('confirmDeleteBtn').onclick = async () => {
+    const btn = document.getElementById('confirmDeleteBtn');
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span> Deleting...';
-    let deleted = 0;
-    let failed = 0;
-
+    let deleted = 0, failed = 0;
     for (const cb of checked) {
       const row = cb.closest('.dup-file');
       const { deleteType, deleteId, ratingkey, mediaid } = row.dataset;
@@ -649,20 +351,16 @@ async function bulkDelete() {
         if (deleteType === 'sonarr') endpoint = `/api/file/tv/${deleteId}`;
         else if (deleteType === 'radarr') endpoint = `/api/file/movie/${deleteId}`;
         else endpoint = `/api/file/plex/${ratingkey}/${mediaid}`;
-
         const res = await fetch(endpoint, { method: 'DELETE' });
         if (!res.ok) throw new Error();
         const group = row.closest('.dup-group');
         row.remove();
         if (group && group.querySelectorAll('.dup-file').length < 2) group.remove();
         deleted++;
-      } catch {
-        failed++;
-      }
+      } catch { failed++; }
     }
-
     toast(`Deleted ${deleted} file${deleted === 1 ? '' : 's'}${failed ? `, ${failed} failed` : ''}`, failed ? 'error' : 'success');
-    updateFilterCounts();
+    refreshShowHeaders();
     updateStats();
     updateBulkBar();
     btn.disabled = false;
@@ -688,8 +386,7 @@ async function loadSettings() {
 async function saveSettings() {
   try {
     const res = await fetch('/api/settings', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'PUT', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         plex: { url: document.getElementById('plexUrl').value, token: document.getElementById('plexToken').value },
         sonarr: { url: document.getElementById('sonarrUrl').value, apiKey: document.getElementById('sonarrKey').value },
@@ -698,9 +395,7 @@ async function saveSettings() {
     });
     if (!res.ok) throw new Error();
     toast('Settings saved');
-  } catch {
-    toast('Failed to save settings', 'error');
-  }
+  } catch { toast('Failed to save settings', 'error'); }
 }
 
 async function testConnections() {
@@ -710,11 +405,7 @@ async function testConnections() {
     el.className = ok ? 'badge badge-ok' : 'badge badge-fail';
     el.textContent = ok ? 'Connected' : 'Failed';
   };
-
-  setBadge('statusPlex', null);
-  setBadge('statusSonarr', null);
-  setBadge('statusRadarr', null);
-
+  setBadge('statusPlex', null); setBadge('statusSonarr', null); setBadge('statusRadarr', null);
   try {
     const res = await fetch('/api/settings/test', { method: 'POST' });
     const r = await res.json();
@@ -722,252 +413,320 @@ async function testConnections() {
     setBadge('statusSonarr', document.getElementById('sonarrUrl').value ? r.sonarr : null);
     setBadge('statusRadarr', document.getElementById('radarrUrl').value ? r.radarr : null);
     toast('Connection test complete');
-  } catch {
-    toast('Connection test failed', 'error');
-  }
+  } catch { toast('Connection test failed', 'error'); }
 }
 
-// ===== Scanning =====
-let currentScanType = null;
-let currentFilter = 'all';
-
+// ===== Helpers =====
 function formatSize(bytes) {
   if (!bytes) return '0 B';
   const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-  let i = 0;
-  let size = bytes;
+  let i = 0, size = bytes;
   while (size >= 1024 && i < units.length - 1) { size /= 1024; i++; }
   return `${size.toFixed(size < 10 ? 2 : 1)} ${units[i]}`;
 }
 
-function getParentDir(filepath) {
-  const parts = filepath.split('/');
-  parts.pop();
-  return parts.join('/');
-}
+function getParentDir(fp) { const p = fp.split('/'); p.pop(); return p.join('/'); }
 
 function classifyDuplicate(files) {
-  // Check if all files are in the same parent folder
   const dirs = new Set(files.map(f => getParentDir(f.file)));
   return dirs.size === 1 ? 'same' : 'diff';
 }
 
+function escHtml(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+function escAttr(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
+// ===== Filter + Sort =====
 function setFilter(filter) {
   currentFilter = filter;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
-  document.querySelectorAll('.dup-group').forEach(g => {
+  document.querySelectorAll('.show-group').forEach(g => {
     if (filter === 'all') { g.style.display = ''; return; }
     g.style.display = g.dataset.folderType === filter ? '' : 'none';
+  });
+  document.querySelectorAll('.section-header').forEach(h => {
+    if (filter === 'all') { h.style.display = ''; return; }
+    h.style.display = h.dataset.section === filter ? '' : 'none';
   });
   clearSelection();
   updateStats();
 }
 
+function applySort() {
+  const sort = document.getElementById('sortSelect').value;
+  const container = document.getElementById('scanResults');
+  const sections = { same: [], diff: [] };
+
+  // Collect show groups
+  container.querySelectorAll('.show-group').forEach(sg => {
+    const type = sg.dataset.folderType;
+    sections[type].push(sg);
+  });
+
+  const sortFn = (a, b) => {
+    const [field, dir] = sort.split('-');
+    let va, vb;
+    if (field === 'name') {
+      va = a.dataset.showName; vb = b.dataset.showName;
+      return dir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+    } else if (field === 'size') {
+      va = parseInt(a.dataset.wasteBytes || 0); vb = parseInt(b.dataset.wasteBytes || 0);
+      return dir === 'desc' ? vb - va : va - vb;
+    } else { // dupes
+      va = parseInt(a.dataset.dupeCount || 0); vb = parseInt(b.dataset.dupeCount || 0);
+      return dir === 'desc' ? vb - va : va - vb;
+    }
+  };
+
+  sections.same.sort(sortFn);
+  sections.diff.sort(sortFn);
+
+  // Rebuild DOM order
+  const sameHeader = container.querySelector('.section-header[data-section="same"]');
+  const diffHeader = container.querySelector('.section-header[data-section="diff"]');
+
+  if (sameHeader) {
+    let ref = sameHeader;
+    sections.same.forEach(sg => { ref.after(sg); ref = sg; });
+  }
+  if (diffHeader) {
+    let ref = diffHeader;
+    sections.diff.forEach(sg => { ref.after(sg); ref = sg; });
+  }
+}
+
 function updateFilterCounts() {
-  const all = document.querySelectorAll('.dup-group').length;
-  const same = document.querySelectorAll('.dup-group[data-folder-type="same"]').length;
-  const diff = document.querySelectorAll('.dup-group[data-folder-type="diff"]').length;
+  const all = document.querySelectorAll('.show-group').length;
+  const same = document.querySelectorAll('.show-group[data-folder-type="same"]').length;
+  const diff = document.querySelectorAll('.show-group[data-folder-type="diff"]').length;
   document.getElementById('filterCountAll').textContent = `(${all})`;
   document.getElementById('filterCountSame').textContent = `(${same})`;
   document.getElementById('filterCountDiff').textContent = `(${diff})`;
 }
 
 function updateStats() {
-  const groups = document.querySelectorAll('.dup-group');
-  let count = 0;
-  let waste = 0;
-  let scored = 0;
-
-  groups.forEach(g => {
-    if (currentFilter !== 'all' && g.dataset.folderType !== currentFilter) return;
-    if (g.style.display === 'none') return;
-    count++;
-    const files = g.querySelectorAll('.dup-file');
-    const sizes = [];
-    files.forEach(f => {
-      const s = parseInt(f.dataset.size || 0);
-      sizes.push(s);
-      if (f.dataset.scored === 'true') scored++;
+  let count = 0, waste = 0, scored = 0;
+  document.querySelectorAll('.show-group').forEach(sg => {
+    if (sg.style.display === 'none') return;
+    sg.querySelectorAll('.dup-group').forEach(g => {
+      count++;
+      const files = g.querySelectorAll('.dup-file');
+      const sizes = [];
+      files.forEach(f => {
+        sizes.push(parseInt(f.dataset.size || 0));
+        if (f.dataset.scored === 'true') scored++;
+      });
+      sizes.sort((a, b) => b - a);
+      for (let i = 1; i < sizes.length; i++) waste += sizes[i];
     });
-    sizes.sort((a, b) => b - a);
-    for (let i = 1; i < sizes.length; i++) waste += sizes[i];
   });
-
   document.getElementById('statCount').textContent = count;
   document.getElementById('statWaste').textContent = formatSize(waste);
   document.getElementById('statScored').textContent = scored;
   document.getElementById('scanStats').style.display = count > 0 ? 'flex' : 'none';
 }
 
+function refreshShowHeaders() {
+  document.querySelectorAll('.show-group').forEach(sg => {
+    const episodes = sg.querySelectorAll('.dup-group');
+    if (episodes.length === 0) { sg.remove(); return; }
+    // Update counts
+    const dupeCount = episodes.length;
+    let wasteBytes = 0;
+    episodes.forEach(g => {
+      const sizes = [...g.querySelectorAll('.dup-file')].map(f => parseInt(f.dataset.size || 0)).sort((a,b) => b-a);
+      for (let i = 1; i < sizes.length; i++) wasteBytes += sizes[i];
+    });
+    sg.dataset.dupeCount = dupeCount;
+    sg.dataset.wasteBytes = wasteBytes;
+    const countEl = sg.querySelector('.show-dupe-count');
+    const wasteEl = sg.querySelector('.show-waste');
+    if (countEl) countEl.textContent = `${dupeCount} dupe${dupeCount === 1 ? '' : 's'}`;
+    if (wasteEl) wasteEl.textContent = formatSize(wasteBytes);
+  });
+  updateFilterCounts();
+}
+
+// ===== Render =====
 function renderDuplicates(duplicates, type, fileScores) {
   const container = document.getElementById('scanResults');
 
   if (!duplicates.length) {
     container.innerHTML = '<div class="empty"><div class="empty-icon">&#10004;</div><p>No duplicates found!</p></div>';
     document.getElementById('scanStats').style.display = 'none';
-    document.getElementById('filterBar').style.display = 'none';
+    document.getElementById('toolbar').style.display = 'none';
     return;
   }
 
-  // Classify each duplicate group
+  // Classify and group by show/movie
   const classified = duplicates.map(dup => ({
     ...dup,
-    folderType: classifyDuplicate(dup.files)
+    folderType: classifyDuplicate(dup.files),
+    scoredFiles: dup.files.map(f => ({ ...f, score: fileScores?.[f.file] }))
   }));
 
-  // Sort: same-folder first, then different-folder
-  classified.sort((a, b) => {
-    if (a.folderType === b.folderType) return 0;
-    return a.folderType === 'same' ? -1 : 1;
+  // Group by show name (TV) or title (movies)
+  const groups = {};
+  for (const dup of classified) {
+    const key = type === 'tv' ? dup.show : `${dup.title} (${dup.year || '?'})`;
+    if (!groups[key]) groups[key] = { name: key, folderType: dup.folderType, episodes: [] };
+    // If any episode in the show has diff folders, mark whole show as diff
+    if (dup.folderType === 'diff') groups[key].folderType = 'diff';
+    groups[key].episodes.push(dup);
+  }
+
+  // Build show list with stats
+  const showList = Object.values(groups).map(g => {
+    let wasteBytes = 0;
+    g.episodes.forEach(ep => {
+      const sizes = ep.scoredFiles.map(f => f.size || 0).sort((a,b) => b-a);
+      for (let i = 1; i < sizes.length; i++) wasteBytes += sizes[i];
+    });
+    return { ...g, dupeCount: g.episodes.length, wasteBytes };
+  });
+
+  // Sort: same first, then diff; within each by dupe count desc
+  showList.sort((a, b) => {
+    if (a.folderType !== b.folderType) return a.folderType === 'same' ? -1 : 1;
+    return b.dupeCount - a.dupeCount;
   });
 
   let html = '';
-  let lastType = null;
+  let lastFolderType = null;
 
-  for (const dup of classified) {
-    // Section headers
-    if (dup.folderType !== lastType) {
-      if (dup.folderType === 'same') {
+  for (const show of showList) {
+    if (show.folderType !== lastFolderType) {
+      if (show.folderType === 'same') {
         html += `<div class="section-header" data-section="same"><h3>Same Folder</h3><span class="badge badge-safe">Safe to clean</span></div>`;
       } else {
         html += `<div class="section-header" data-section="diff"><h3>Different Folders</h3><span class="badge badge-warn">Review carefully</span></div>`;
       }
-      lastType = dup.folderType;
+      lastFolderType = show.folderType;
     }
 
-    let label;
-    if (type === 'tv') {
-      label = `${dup.show} - S${String(dup.season).padStart(2,'0')}E${String(dup.episode).padStart(2,'0')} - ${dup.title}`;
-    } else {
-      label = `${dup.title}${dup.year ? ` (${dup.year})` : ''}`;
-    }
+    const showId = `show_${Math.random().toString(36).slice(2,8)}`;
 
-    // Score each file
-    const scored = dup.files.map(f => {
-      const score = fileScores?.[f.file];
-      return { ...f, score };
-    });
-
-    // Sort by quality weight descending (best first)
-    scored.sort((a, b) => {
-      const wA = a.score?.qualityWeight ?? -1;
-      const wB = b.score?.qualityWeight ?? -1;
-      if (wB !== wA) return wB - wA;
-      const cfA = a.score?.customFormatScore ?? 0;
-      const cfB = b.score?.customFormatScore ?? 0;
-      if (cfB !== cfA) return cfB - cfA;
-      return (b.size || 0) - (a.size || 0);
-    });
-
-    html += `<div class="dup-group" data-folder-type="${dup.folderType}">`;
-    html += `<div class="dup-header" onclick="this.parentElement.classList.toggle('open')">`;
-    html += `<div><div class="dup-title">${escHtml(label)}</div>`;
-    html += `<div class="dup-sub">${escHtml(dup.library)} &middot; ${scored.length} files`;
-    if (dup.folderType === 'diff') html += ` &middot; <span style="color:var(--orange)">different folders</span>`;
+    html += `<div class="show-group" id="${showId}" data-folder-type="${show.folderType}" data-show-name="${escAttr(show.name)}" data-dupe-count="${show.dupeCount}" data-waste-bytes="${show.wasteBytes}">`;
+    html += `<div class="show-header" onclick="this.closest('.show-group').classList.toggle('open')">`;
+    html += `<span class="arrow">&#9654;</span>`;
+    html += `<input type="checkbox" class="show-cb" onclick="event.stopPropagation();toggleShowSelect(this,this.closest('.show-group'))">`;
+    html += `<span class="show-title">${escHtml(show.name)}</span>`;
+    html += `<div class="show-meta">`;
+    html += `<span class="show-dupe-count">${show.dupeCount} dupe${show.dupeCount === 1 ? '' : 's'}</span>`;
+    html += `<span class="waste show-waste">${formatSize(show.wasteBytes)}</span>`;
     html += `</div></div>`;
-    html += `<div class="dup-sub">${formatSize(scored.reduce((s,f) => s + (f.size||0), 0))} total</div>`;
-    html += `</div>`;
-    html += `<div class="dup-files">`;
+    html += `<div class="show-episodes">`;
 
-    scored.forEach((f, i) => {
-      const isBest = i === 0;
-      const cls = isBest ? 'recommended' : 'inferior';
-      const hasScore = !!f.score;
-
-      // Determine delete method: prefer Sonarr/Radarr, fall back to Plex
-      const arrFileId = f.score?.episodeFileId || f.score?.movieFileId;
-      let deleteType, deleteId;
-      if (arrFileId && type === 'tv') { deleteType = 'sonarr'; deleteId = arrFileId; }
-      else if (arrFileId && type === 'movies') { deleteType = 'radarr'; deleteId = arrFileId; }
-      else { deleteType = 'plex'; deleteId = f.mediaId; }
-
-      const qualityName = f.score?.qualityName || f.videoResolution || '?';
-      const weight = f.score?.qualityWeight ?? '—';
-      const cfScore = f.score?.customFormatScore ?? 0;
-      const fileName = f.file.split('/').pop();
-
-      html += `<div class="dup-file ${cls}" data-size="${f.size||0}" data-scored="${hasScore}" data-filename="${escAttr(fileName)}" data-filepath="${escAttr(f.file)}" data-delete-type="${deleteType}" data-delete-id="${deleteId || ''}" data-ratingkey="${dup.ratingKey}" data-mediaid="${f.mediaId}">`;
-
-      // Checkbox for non-best files
-      html += `<div style="display:flex;align-items:flex-start;gap:0.75rem;">`;
-      if (!isBest) {
-        html += `<input type="checkbox" class="file-select" onchange="updateBulkBar()" style="margin-top:3px;">`;
-      } else {
-        html += `<div style="width:18px;"></div>`;
+    // Sort episodes
+    show.episodes.sort((a, b) => {
+      if (type === 'tv') {
+        if (a.season !== b.season) return (a.season || 0) - (b.season || 0);
+        return (a.episode || 0) - (b.episode || 0);
       }
-      html += `<div style="flex:1;">`;
-      html += `<div style="display:flex;align-items:center;gap:0.5rem;">`;
-      html += isBest ? `<span class="badge badge-ok">KEEP</span>` : `<span class="badge badge-fail">DUPE</span>`;
-      html += `<span style="font-weight:600;">${escHtml(fileName)}</span>`;
-      html += `</div>`;
-      html += `<div class="file-path">${escHtml(f.file)}</div>`;
-      html += `<div class="file-meta" style="margin-top:0.4rem;">`;
-      html += `<span class="quality">${escHtml(qualityName)}</span>`;
-      html += `<span class="score">Weight: ${weight}</span>`;
-      if (cfScore) html += `<span class="score">CF: +${cfScore}</span>`;
-      html += `<span>${escHtml(f.videoCodec || '?')} / ${escHtml(f.audioCodec || '?')} ${f.audioChannels || ''}ch</span>`;
-      html += `<span>${f.width || '?'}x${f.height || '?'}</span>`;
-      html += `<span>${formatSize(f.size)}</span>`;
-      if (f.bitrate) html += `<span>${Math.round(f.bitrate/1000)} Mbps</span>`;
-      html += `</div></div></div>`;
-
-      // Delete button on all non-best files
-      html += `<div>`;
-      if (!isBest) {
-        html += `<button class="btn btn-danger btn-sm" onclick="confirmDelete('${escAttr(f.file)}','${deleteType}','${deleteId || ''}','${dup.ratingKey}','${f.mediaId}',this.closest('.dup-file'))">Delete</button>`;
-      }
-      html += `</div></div>`;
+      return 0;
     });
+
+    for (const ep of show.episodes) {
+      let label;
+      if (type === 'tv') {
+        label = `S${String(ep.season).padStart(2,'0')}E${String(ep.episode).padStart(2,'0')} - ${ep.title}`;
+      } else {
+        label = ep.title;
+      }
+
+      // Sort files by quality
+      ep.scoredFiles.sort((a, b) => {
+        const wA = a.score?.qualityWeight ?? -1;
+        const wB = b.score?.qualityWeight ?? -1;
+        if (wB !== wA) return wB - wA;
+        const cfA = a.score?.customFormatScore ?? 0;
+        const cfB = b.score?.customFormatScore ?? 0;
+        if (cfB !== cfA) return cfB - cfA;
+        return (b.size || 0) - (a.size || 0);
+      });
+
+      html += `<div class="dup-group">`;
+      html += `<div class="dup-header" onclick="this.parentElement.classList.toggle('open')">`;
+      html += `<div><span class="dup-title">${escHtml(label)}</span></div>`;
+      html += `<div class="dup-sub">${ep.scoredFiles.length} files &middot; ${formatSize(ep.scoredFiles.reduce((s,f) => s + (f.size||0), 0))}</div>`;
+      html += `</div><div class="dup-files">`;
+
+      ep.scoredFiles.forEach((f, i) => {
+        const isBest = i === 0;
+        const cls = isBest ? 'recommended' : 'inferior';
+        const hasScore = !!f.score;
+        const arrFileId = f.score?.episodeFileId || f.score?.movieFileId;
+        let deleteType, deleteId;
+        if (arrFileId && type === 'tv') { deleteType = 'sonarr'; deleteId = arrFileId; }
+        else if (arrFileId && type === 'movies') { deleteType = 'radarr'; deleteId = arrFileId; }
+        else { deleteType = 'plex'; deleteId = f.mediaId; }
+
+        const qualityName = f.score?.qualityName || f.videoResolution || '?';
+        const weight = f.score?.qualityWeight ?? '—';
+        const cfScore = f.score?.customFormatScore ?? 0;
+        const fileName = f.file.split('/').pop();
+
+        html += `<div class="dup-file ${cls}" data-size="${f.size||0}" data-scored="${hasScore}" data-delete-type="${deleteType}" data-delete-id="${deleteId || ''}" data-ratingkey="${ep.ratingKey}" data-mediaid="${f.mediaId}">`;
+        html += `<div style="display:flex;align-items:flex-start;gap:0.75rem;">`;
+        if (!isBest) {
+          html += `<input type="checkbox" class="file-select" onchange="updateBulkBar()" style="margin-top:3px;">`;
+        } else {
+          html += `<div style="width:18px;"></div>`;
+        }
+        html += `<div style="flex:1;">`;
+        html += `<div style="display:flex;align-items:center;gap:0.5rem;">`;
+        html += isBest ? `<span class="badge badge-ok">KEEP</span>` : `<span class="badge badge-fail">DUPE</span>`;
+        html += `<span style="font-weight:600;">${escHtml(fileName)}</span>`;
+        html += `</div>`;
+        html += `<div class="file-path">${escHtml(f.file)}</div>`;
+        html += `<div class="file-meta">`;
+        html += `<span class="quality">${escHtml(qualityName)}</span>`;
+        html += `<span class="score">Weight: ${weight}</span>`;
+        if (cfScore) html += `<span class="score">CF: +${cfScore}</span>`;
+        html += `<span>${escHtml(f.videoCodec || '?')} / ${escHtml(f.audioCodec || '?')} ${f.audioChannels || ''}ch</span>`;
+        html += `<span>${f.width || '?'}x${f.height || '?'}</span>`;
+        html += `<span>${formatSize(f.size)}</span>`;
+        if (f.bitrate) html += `<span>${Math.round(f.bitrate/1000)} Mbps</span>`;
+        html += `</div></div></div>`;
+        html += `<div>`;
+        if (!isBest) {
+          html += `<button class="btn btn-danger btn-sm" onclick="confirmDelete('${escAttr(f.file)}','${deleteType}','${deleteId || ''}','${ep.ratingKey}','${f.mediaId}',this.closest('.dup-file'))">Delete</button>`;
+        }
+        html += `</div></div>`;
+      });
+
+      html += `</div></div>`;
+    }
 
     html += `</div></div>`;
   }
 
   container.innerHTML = html;
-  document.getElementById('filterBar').style.display = 'flex';
+  document.getElementById('toolbar').style.display = 'flex';
   updateFilterCounts();
   updateStats();
 }
 
-function escHtml(s) {
-  const d = document.createElement('div');
-  d.textContent = s || '';
-  return d.innerHTML;
-}
-
-function escAttr(s) {
-  return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-}
-
+// ===== Scan =====
 async function scanTV() {
   const btn = document.getElementById('scanTvBtn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Scanning TV...';
   document.getElementById('scanResults').innerHTML = '<div class="loading-overlay"><span class="spinner"></span> Scanning Plex for duplicate TV episodes...</div>';
-  document.getElementById('filterBar').style.display = 'none';
-  document.getElementById('bulkBar').style.display = 'none';
-  currentScanType = 'tv';
-  currentFilter = 'all';
-
+  document.getElementById('toolbar').style.display = 'none';
+  document.getElementById('bulkBar').classList.remove('show');
+  currentScanType = 'tv'; currentFilter = 'all';
   try {
-    const [dupsRes, scoresRes] = await Promise.all([
-      fetch('/api/scan/tv'),
-      fetch('/api/score/tv').catch(() => ({ ok: false }))
-    ]);
-
+    const [dupsRes, scoresRes] = await Promise.all([fetch('/api/scan/tv'), fetch('/api/score/tv').catch(() => ({ ok: false }))]);
     if (!dupsRes.ok) throw new Error((await dupsRes.json()).error);
-
     const { duplicates } = await dupsRes.json();
     const scores = scoresRes.ok ? (await scoresRes.json()).fileScores : {};
-
     renderDuplicates(duplicates, 'tv', scores);
     toast(`Found ${duplicates.length} duplicate${duplicates.length === 1 ? '' : 's'}`);
   } catch (err) {
     document.getElementById('scanResults').innerHTML = `<div class="empty"><div class="empty-icon">&#9888;</div><p>${escHtml(err.message)}</p></div>`;
     toast(err.message, 'error');
   }
-
-  btn.disabled = false;
-  btn.textContent = 'Scan TV Shows';
+  btn.disabled = false; btn.textContent = 'Scan TV Shows';
 }
 
 async function scanMovies() {
@@ -975,37 +734,24 @@ async function scanMovies() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Scanning Movies...';
   document.getElementById('scanResults').innerHTML = '<div class="loading-overlay"><span class="spinner"></span> Scanning Plex for duplicate movies...</div>';
-  document.getElementById('filterBar').style.display = 'none';
-  document.getElementById('bulkBar').style.display = 'none';
-  currentScanType = 'movies';
-  currentFilter = 'all';
-
+  document.getElementById('toolbar').style.display = 'none';
+  document.getElementById('bulkBar').classList.remove('show');
+  currentScanType = 'movies'; currentFilter = 'all';
   try {
-    const [dupsRes, scoresRes] = await Promise.all([
-      fetch('/api/scan/movies'),
-      fetch('/api/score/movies').catch(() => ({ ok: false }))
-    ]);
-
+    const [dupsRes, scoresRes] = await Promise.all([fetch('/api/scan/movies'), fetch('/api/score/movies').catch(() => ({ ok: false }))]);
     if (!dupsRes.ok) throw new Error((await dupsRes.json()).error);
-
     const { duplicates } = await dupsRes.json();
     const scores = scoresRes.ok ? (await scoresRes.json()).fileScores : {};
-
     renderDuplicates(duplicates, 'movies', scores);
     toast(`Found ${duplicates.length} duplicate${duplicates.length === 1 ? '' : 's'}`);
   } catch (err) {
     document.getElementById('scanResults').innerHTML = `<div class="empty"><div class="empty-icon">&#9888;</div><p>${escHtml(err.message)}</p></div>`;
     toast(err.message, 'error');
   }
-
-  btn.disabled = false;
-  btn.textContent = 'Scan Movies';
+  btn.disabled = false; btn.textContent = 'Scan Movies';
 }
 
-// Init
 loadSettings();
-document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
 </script>
-
 </body>
 </html>
