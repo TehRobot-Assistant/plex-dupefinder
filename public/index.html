@@ -637,10 +637,21 @@ function renderDuplicates(duplicates, type, fileScores) {
       ep.scoredFiles.sort((a, b) => {
         const wA = a.score?.qualityWeight ?? -1;
         const wB = b.score?.qualityWeight ?? -1;
-        if (wB !== wA) return wB - wA;
+        // If both have Arr weights, use those
+        if (wA >= 0 && wB >= 0 && wB !== wA) return wB - wA;
+        // Custom format score
         const cfA = a.score?.customFormatScore ?? 0;
         const cfB = b.score?.customFormatScore ?? 0;
         if (cfB !== cfA) return cfB - cfA;
+        // Fallback: Plex resolution (1080 > 720 > 480 etc)
+        const resA = parseInt(a.videoResolution) || 0;
+        const resB = parseInt(b.videoResolution) || 0;
+        if (resB !== resA) return resB - resA;
+        // Then pixel count (width * height)
+        const pxA = (a.width || 0) * (a.height || 0);
+        const pxB = (b.width || 0) * (b.height || 0);
+        if (pxB !== pxA) return pxB - pxA;
+        // Last resort: file size (larger = better quality usually, but after resolution)
         return (b.size || 0) - (a.size || 0);
       });
 
