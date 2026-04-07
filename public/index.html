@@ -244,8 +244,78 @@
     .stat-value { font-size: 1.5rem; font-weight: 700; }
     .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
 
-    /* ===== TABS ===== */
+    /* ===== TABS / FILTER BAR ===== */
     .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+
+    .filter-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-btn {
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius);
+      font-size: 0.8rem;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+    .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    .filter-count {
+      font-size: 0.75rem;
+      opacity: 0.7;
+      margin-left: 0.2rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 1.25rem 0 0.5rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-header h3 { font-size: 0.95rem; font-weight: 600; }
+
+    .section-header .badge-warn {
+      background: rgba(255,194,48,0.15);
+      color: var(--orange);
+    }
+
+    .section-header .badge-safe {
+      background: rgba(49,162,76,0.15);
+      color: var(--green);
+    }
+
+    .bulk-bar {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .bulk-bar span { font-size: 0.85rem; color: var(--text-muted); flex: 1; }
+
+    .dup-file .file-select {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
 
     /* ===== LOADING ===== */
     .spinner {
@@ -388,6 +458,19 @@
     </div>
   </div>
 
+  <div class="filter-bar" id="filterBar" style="display:none;">
+    <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">All <span class="filter-count" id="filterCountAll"></span></button>
+    <button class="filter-btn" data-filter="same" onclick="setFilter('same')">Same Folder <span class="filter-count" id="filterCountSame"></span></button>
+    <button class="filter-btn" data-filter="diff" onclick="setFilter('diff')">Different Folders <span class="filter-count" id="filterCountDiff"></span></button>
+  </div>
+
+  <div class="bulk-bar" id="bulkBar" style="display:none;">
+    <span><strong id="bulkCount">0</strong> files selected</span>
+    <button class="btn btn-danger btn-sm" onclick="bulkDelete()">Delete Selected</button>
+    <button class="btn btn-sm" onclick="selectAllInferior()">Select All Dupes</button>
+    <button class="btn btn-sm" onclick="clearSelection()">Clear</button>
+  </div>
+
   <div id="scanResults">
     <div class="empty">
       <div class="empty-icon">&#128269;</div>
@@ -480,34 +563,108 @@ function closeModal() {
   document.getElementById('confirmModal').classList.remove('show');
 }
 
-function confirmDelete(filePath, type, fileId, el) {
+function confirmDelete(filePath, deleteType, deleteId, ratingKey, mediaId, el) {
   const modal = document.getElementById('confirmModal');
-  document.getElementById('confirmText').textContent = `Are you sure you want to delete this file? This cannot be undone.`;
+  document.getElementById('confirmText').textContent = 'Are you sure you want to delete this file? This cannot be undone.';
   document.getElementById('confirmPath').textContent = filePath;
+  modal.classList.add('show');
+
+  const btn = document.getElementById('confirmDeleteBtn');
+  btn.onclick = () => doDelete(deleteType, deleteId, ratingKey, mediaId, el);
+}
+
+async function doDelete(deleteType, deleteId, ratingKey, mediaId, el) {
+  const btn = document.getElementById('confirmDeleteBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Deleting...';
+  try {
+    let endpoint;
+    if (deleteType === 'sonarr') endpoint = `/api/file/tv/${deleteId}`;
+    else if (deleteType === 'radarr') endpoint = `/api/file/movie/${deleteId}`;
+    else endpoint = `/api/file/plex/${ratingKey}/${mediaId}`;
+
+    const res = await fetch(endpoint, { method: 'DELETE' });
+    if (!res.ok) throw new Error((await res.json()).error);
+    toast('File deleted successfully');
+    if (el) {
+      const group = el.closest('.dup-group');
+      el.remove();
+      if (group && group.querySelectorAll('.dup-file').length < 2) {
+        group.remove();
+        updateFilterCounts();
+        updateStats();
+      }
+    }
+  } catch (err) {
+    toast(`Delete failed: ${err.message}`, 'error');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Delete';
+  closeModal();
+}
+
+// ===== Selection / Bulk =====
+function updateBulkBar() {
+  const checked = document.querySelectorAll('.file-select:checked');
+  const bar = document.getElementById('bulkBar');
+  document.getElementById('bulkCount').textContent = checked.length;
+  bar.style.display = checked.length > 0 ? 'flex' : 'none';
+}
+
+function selectAllInferior() {
+  const visible = currentFilter;
+  document.querySelectorAll('.dup-group').forEach(g => {
+    if (visible !== 'all' && g.dataset.folderType !== visible) return;
+    g.querySelectorAll('.dup-file.inferior .file-select').forEach(cb => cb.checked = true);
+  });
+  updateBulkBar();
+}
+
+function clearSelection() {
+  document.querySelectorAll('.file-select').forEach(cb => cb.checked = false);
+  updateBulkBar();
+}
+
+async function bulkDelete() {
+  const checked = [...document.querySelectorAll('.file-select:checked')];
+  if (!checked.length) return;
+
+  const modal = document.getElementById('confirmModal');
+  document.getElementById('confirmText').textContent = `Delete ${checked.length} selected file${checked.length === 1 ? '' : 's'}? This cannot be undone.`;
+  document.getElementById('confirmPath').textContent = checked.map(cb => cb.closest('.dup-file').dataset.filename).join('\n');
   modal.classList.add('show');
 
   const btn = document.getElementById('confirmDeleteBtn');
   btn.onclick = async () => {
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span> Deleting...';
-    try {
-      const endpoint = type === 'tv' ? `/api/file/tv/${fileId}` : `/api/file/movie/${fileId}`;
-      const res = await fetch(endpoint, { method: 'DELETE' });
-      if (!res.ok) throw new Error((await res.json()).error);
-      toast('File deleted successfully');
-      // Remove the file row from the UI
-      if (el) {
-        const group = el.closest('.dup-group');
-        el.remove();
-        // If only 1 file left, remove the whole group
-        if (group && group.querySelectorAll('.dup-file').length < 2) {
-          group.remove();
-          updateStats();
-        }
+    let deleted = 0;
+    let failed = 0;
+
+    for (const cb of checked) {
+      const row = cb.closest('.dup-file');
+      const { deleteType, deleteId, ratingkey, mediaid } = row.dataset;
+      try {
+        let endpoint;
+        if (deleteType === 'sonarr') endpoint = `/api/file/tv/${deleteId}`;
+        else if (deleteType === 'radarr') endpoint = `/api/file/movie/${deleteId}`;
+        else endpoint = `/api/file/plex/${ratingkey}/${mediaid}`;
+
+        const res = await fetch(endpoint, { method: 'DELETE' });
+        if (!res.ok) throw new Error();
+        const group = row.closest('.dup-group');
+        row.remove();
+        if (group && group.querySelectorAll('.dup-file').length < 2) group.remove();
+        deleted++;
+      } catch {
+        failed++;
       }
-    } catch (err) {
-      toast(`Delete failed: ${err.message}`, 'error');
     }
+
+    toast(`Deleted ${deleted} file${deleted === 1 ? '' : 's'}${failed ? `, ${failed} failed` : ''}`, failed ? 'error' : 'success');
+    updateFilterCounts();
+    updateStats();
+    updateBulkBar();
     btn.disabled = false;
     btn.textContent = 'Delete';
     closeModal();
@@ -572,6 +729,7 @@ async function testConnections() {
 
 // ===== Scanning =====
 let currentScanType = null;
+let currentFilter = 'all';
 
 function formatSize(bytes) {
   if (!bytes) return '0 B';
@@ -582,13 +740,48 @@ function formatSize(bytes) {
   return `${size.toFixed(size < 10 ? 2 : 1)} ${units[i]}`;
 }
 
+function getParentDir(filepath) {
+  const parts = filepath.split('/');
+  parts.pop();
+  return parts.join('/');
+}
+
+function classifyDuplicate(files) {
+  // Check if all files are in the same parent folder
+  const dirs = new Set(files.map(f => getParentDir(f.file)));
+  return dirs.size === 1 ? 'same' : 'diff';
+}
+
+function setFilter(filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
+  document.querySelectorAll('.dup-group').forEach(g => {
+    if (filter === 'all') { g.style.display = ''; return; }
+    g.style.display = g.dataset.folderType === filter ? '' : 'none';
+  });
+  clearSelection();
+  updateStats();
+}
+
+function updateFilterCounts() {
+  const all = document.querySelectorAll('.dup-group').length;
+  const same = document.querySelectorAll('.dup-group[data-folder-type="same"]').length;
+  const diff = document.querySelectorAll('.dup-group[data-folder-type="diff"]').length;
+  document.getElementById('filterCountAll').textContent = `(${all})`;
+  document.getElementById('filterCountSame').textContent = `(${same})`;
+  document.getElementById('filterCountDiff').textContent = `(${diff})`;
+}
+
 function updateStats() {
   const groups = document.querySelectorAll('.dup-group');
-  const count = groups.length;
+  let count = 0;
   let waste = 0;
   let scored = 0;
 
   groups.forEach(g => {
+    if (currentFilter !== 'all' && g.dataset.folderType !== currentFilter) return;
+    if (g.style.display === 'none') return;
+    count++;
     const files = g.querySelectorAll('.dup-file');
     const sizes = [];
     files.forEach(f => {
@@ -596,7 +789,6 @@ function updateStats() {
       sizes.push(s);
       if (f.dataset.scored === 'true') scored++;
     });
-    // Reclaimable = all sizes except the largest
     sizes.sort((a, b) => b - a);
     for (let i = 1; i < sizes.length; i++) waste += sizes[i];
   });
@@ -613,12 +805,36 @@ function renderDuplicates(duplicates, type, fileScores) {
   if (!duplicates.length) {
     container.innerHTML = '<div class="empty"><div class="empty-icon">&#10004;</div><p>No duplicates found!</p></div>';
     document.getElementById('scanStats').style.display = 'none';
+    document.getElementById('filterBar').style.display = 'none';
     return;
   }
 
-  let html = '';
+  // Classify each duplicate group
+  const classified = duplicates.map(dup => ({
+    ...dup,
+    folderType: classifyDuplicate(dup.files)
+  }));
 
-  for (const dup of duplicates) {
+  // Sort: same-folder first, then different-folder
+  classified.sort((a, b) => {
+    if (a.folderType === b.folderType) return 0;
+    return a.folderType === 'same' ? -1 : 1;
+  });
+
+  let html = '';
+  let lastType = null;
+
+  for (const dup of classified) {
+    // Section headers
+    if (dup.folderType !== lastType) {
+      if (dup.folderType === 'same') {
+        html += `<div class="section-header" data-section="same"><h3>Same Folder</h3><span class="badge badge-safe">Safe to clean</span></div>`;
+      } else {
+        html += `<div class="section-header" data-section="diff"><h3>Different Folders</h3><span class="badge badge-warn">Review carefully</span></div>`;
+      }
+      lastType = dup.folderType;
+    }
+
     let label;
     if (type === 'tv') {
       label = `${dup.show} - S${String(dup.season).padStart(2,'0')}E${String(dup.episode).padStart(2,'0')} - ${dup.title}`;
@@ -637,17 +853,18 @@ function renderDuplicates(duplicates, type, fileScores) {
       const wA = a.score?.qualityWeight ?? -1;
       const wB = b.score?.qualityWeight ?? -1;
       if (wB !== wA) return wB - wA;
-      // Tie-break: custom format score, then file size
       const cfA = a.score?.customFormatScore ?? 0;
       const cfB = b.score?.customFormatScore ?? 0;
       if (cfB !== cfA) return cfB - cfA;
       return (b.size || 0) - (a.size || 0);
     });
 
-    html += `<div class="dup-group">`;
+    html += `<div class="dup-group" data-folder-type="${dup.folderType}">`;
     html += `<div class="dup-header" onclick="this.parentElement.classList.toggle('open')">`;
     html += `<div><div class="dup-title">${escHtml(label)}</div>`;
-    html += `<div class="dup-sub">${dup.library} &middot; ${scored.length} files</div></div>`;
+    html += `<div class="dup-sub">${escHtml(dup.library)} &middot; ${scored.length} files`;
+    if (dup.folderType === 'diff') html += ` &middot; <span style="color:var(--orange)">different folders</span>`;
+    html += `</div></div>`;
     html += `<div class="dup-sub">${formatSize(scored.reduce((s,f) => s + (f.size||0), 0))} total</div>`;
     html += `</div>`;
     html += `<div class="dup-files">`;
@@ -656,16 +873,32 @@ function renderDuplicates(duplicates, type, fileScores) {
       const isBest = i === 0;
       const cls = isBest ? 'recommended' : 'inferior';
       const hasScore = !!f.score;
-      const fileId = f.score?.episodeFileId || f.score?.movieFileId;
+
+      // Determine delete method: prefer Sonarr/Radarr, fall back to Plex
+      const arrFileId = f.score?.episodeFileId || f.score?.movieFileId;
+      let deleteType, deleteId;
+      if (arrFileId && type === 'tv') { deleteType = 'sonarr'; deleteId = arrFileId; }
+      else if (arrFileId && type === 'movies') { deleteType = 'radarr'; deleteId = arrFileId; }
+      else { deleteType = 'plex'; deleteId = f.mediaId; }
+
       const qualityName = f.score?.qualityName || f.videoResolution || '?';
       const weight = f.score?.qualityWeight ?? '—';
       const cfScore = f.score?.customFormatScore ?? 0;
+      const fileName = f.file.split('/').pop();
 
-      html += `<div class="dup-file ${cls}" data-size="${f.size||0}" data-scored="${hasScore}">`;
-      html += `<div>`;
+      html += `<div class="dup-file ${cls}" data-size="${f.size||0}" data-scored="${hasScore}" data-filename="${escAttr(fileName)}" data-filepath="${escAttr(f.file)}" data-delete-type="${deleteType}" data-delete-id="${deleteId || ''}" data-ratingkey="${dup.ratingKey}" data-mediaid="${f.mediaId}">`;
+
+      // Checkbox for non-best files
+      html += `<div style="display:flex;align-items:flex-start;gap:0.75rem;">`;
+      if (!isBest) {
+        html += `<input type="checkbox" class="file-select" onchange="updateBulkBar()" style="margin-top:3px;">`;
+      } else {
+        html += `<div style="width:18px;"></div>`;
+      }
+      html += `<div style="flex:1;">`;
       html += `<div style="display:flex;align-items:center;gap:0.5rem;">`;
       html += isBest ? `<span class="badge badge-ok">KEEP</span>` : `<span class="badge badge-fail">DUPE</span>`;
-      html += `<span style="font-weight:600;">${escHtml(f.file.split('/').pop())}</span>`;
+      html += `<span style="font-weight:600;">${escHtml(fileName)}</span>`;
       html += `</div>`;
       html += `<div class="file-path">${escHtml(f.file)}</div>`;
       html += `<div class="file-meta" style="margin-top:0.4rem;">`;
@@ -676,10 +909,12 @@ function renderDuplicates(duplicates, type, fileScores) {
       html += `<span>${f.width || '?'}x${f.height || '?'}</span>`;
       html += `<span>${formatSize(f.size)}</span>`;
       if (f.bitrate) html += `<span>${Math.round(f.bitrate/1000)} Mbps</span>`;
-      html += `</div></div>`;
+      html += `</div></div></div>`;
+
+      // Delete button on all non-best files
       html += `<div>`;
-      if (!isBest && fileId) {
-        html += `<button class="btn btn-danger btn-sm" onclick="confirmDelete('${escAttr(f.file)}','${type}','${fileId}',this.closest('.dup-file'))">Delete</button>`;
+      if (!isBest) {
+        html += `<button class="btn btn-danger btn-sm" onclick="confirmDelete('${escAttr(f.file)}','${deleteType}','${deleteId || ''}','${dup.ratingKey}','${f.mediaId}',this.closest('.dup-file'))">Delete</button>`;
       }
       html += `</div></div>`;
     });
@@ -688,6 +923,8 @@ function renderDuplicates(duplicates, type, fileScores) {
   }
 
   container.innerHTML = html;
+  document.getElementById('filterBar').style.display = 'flex';
+  updateFilterCounts();
   updateStats();
 }
 
@@ -706,7 +943,10 @@ async function scanTV() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Scanning TV...';
   document.getElementById('scanResults').innerHTML = '<div class="loading-overlay"><span class="spinner"></span> Scanning Plex for duplicate TV episodes...</div>';
+  document.getElementById('filterBar').style.display = 'none';
+  document.getElementById('bulkBar').style.display = 'none';
   currentScanType = 'tv';
+  currentFilter = 'all';
 
   try {
     const [dupsRes, scoresRes] = await Promise.all([
@@ -735,7 +975,10 @@ async function scanMovies() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Scanning Movies...';
   document.getElementById('scanResults').innerHTML = '<div class="loading-overlay"><span class="spinner"></span> Scanning Plex for duplicate movies...</div>';
+  document.getElementById('filterBar').style.display = 'none';
+  document.getElementById('bulkBar').style.display = 'none';
   currentScanType = 'movies';
+  currentFilter = 'all';
 
   try {
     const [dupsRes, scoresRes] = await Promise.all([
@@ -761,6 +1004,7 @@ async function scanMovies() {
 
 // Init
 loadSettings();
+document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
 </script>
 
 </body>

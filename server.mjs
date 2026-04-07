@@ -338,6 +338,7 @@ app.get('/api/score/movies', async (req, res) => {
 
 // ===== Delete File =====
 
+// Delete via Sonarr
 app.delete('/api/file/tv/:episodeFileId', async (req, res) => {
   try {
     if (!config.sonarr.url || !config.sonarr.apiKey) {
@@ -351,6 +352,7 @@ app.delete('/api/file/tv/:episodeFileId', async (req, res) => {
   }
 });
 
+// Delete via Radarr
 app.delete('/api/file/movie/:movieFileId', async (req, res) => {
   try {
     if (!config.radarr.url || !config.radarr.apiKey) {
@@ -360,6 +362,26 @@ app.delete('/api/file/movie/:movieFileId', async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     console.error('Delete movie file error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete via Plex (fallback when no Sonarr/Radarr file ID)
+app.delete('/api/file/plex/:ratingKey/:mediaId', async (req, res) => {
+  try {
+    if (!config.plex.url || !config.plex.token) {
+      return res.status(400).json({ error: 'Plex not configured' });
+    }
+    const { ratingKey, mediaId } = req.params;
+    const url = `${config.plex.url.replace(/\/$/, '')}/library/metadata/${ratingKey}/media/${mediaId}`;
+    const plexRes = await fetch(`${url}?X-Plex-Token=${config.plex.token}`, {
+      method: 'DELETE',
+      headers: { Accept: 'application/json' }
+    });
+    if (!plexRes.ok) throw new Error(`Plex DELETE ${plexRes.status}: ${plexRes.statusText}`);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Delete Plex media error:', err);
     res.status(500).json({ error: err.message });
   }
 });
