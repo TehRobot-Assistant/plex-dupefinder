@@ -561,7 +561,10 @@ function renderDuplicates(duplicates, type, fileScores) {
   const classified = duplicates.map(dup => ({
     ...dup,
     folderType: classifyDuplicate(dup.files),
-    scoredFiles: dup.files.map(f => ({ ...f, score: fileScores?.[f.file] }))
+    scoredFiles: dup.files.map(f => {
+      const fileName = f.file.split('/').pop();
+      return { ...f, score: fileScores?.[fileName] || fileScores?.[f.file] };
+    })
   }));
 
   // Group by show name (TV) or title (movies)

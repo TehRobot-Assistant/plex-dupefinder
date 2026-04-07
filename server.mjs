@@ -236,6 +236,11 @@ app.get('/api/scan/movies', async (req, res) => {
   }
 });
 
+// ===== Helper: extract filename from path =====
+function basename(filePath) {
+  return filePath?.split('/').pop() || filePath;
+}
+
 // ===== Sonarr Quality Scoring =====
 
 app.get('/api/score/tv', async (req, res) => {
@@ -256,18 +261,19 @@ app.get('/api/score/tv', async (req, res) => {
       };
     });
 
-    // Get all episode files
-    const series = await sonarrFetch('/series');
+    // Score by filename (not full path) to handle different mount points
     const fileScores = {};
 
+    // 1. Current episode files (active files Sonarr tracks)
+    const series = await sonarrFetch('/series');
     for (const show of series) {
       const epFiles = await sonarrFetch(`/episodefile?seriesId=${show.id}`);
       for (const ef of epFiles) {
-        const filePath = ef.path;
+        const fileName = basename(ef.path);
         const qualityId = ef.quality?.quality?.id;
         const qualityInfo = qualityMap[qualityId] || { name: 'Unknown', weight: 0 };
 
-        fileScores[filePath] = {
+        fileScores[fileName] = {
           qualityName: qualityInfo.name,
           qualityWeight: qualityInfo.weight,
           resolution: qualityInfo.resolution,
@@ -279,6 +285,44 @@ app.get('/api/score/tv', async (req, res) => {
           customFormatScore: ef.customFormatScore || 0
         };
       }
+    }
+
+    // 2. History (covers files Sonarr grabbed but may no longer track)
+    try {
+      let page = 1;
+      const pageSize = 250;
+      let hasMore = true;
+
+      while (hasMore) {
+        const history = await sonarrFetch(`/history?page=${page}&pageSize=${pageSize}&sortKey=date&sortDirection=descending&eventType=1`);
+        const records = history.records || [];
+
+        for (const rec of records) {
+          const fileName = rec.sourceTitle;
+          if (!fileName || fileScores[fileName]) continue; // skip if already scored from episode files
+
+          const qualityId = rec.quality?.quality?.id;
+          const qualityInfo = qualityMap[qualityId] || { name: 'Unknown', weight: 0 };
+
+          fileScores[fileName] = {
+            qualityName: qualityInfo.name,
+            qualityWeight: qualityInfo.weight,
+            resolution: qualityInfo.resolution,
+            source: qualityInfo.source,
+            size: null,
+            episodeFileId: null,
+            seriesId: rec.seriesId,
+            customFormats: rec.customFormats || [],
+            customFormatScore: rec.customFormatScore || 0,
+            fromHistory: true
+          };
+        }
+
+        hasMore = records.length === pageSize && page < 20; // cap at 5000 records
+        page++;
+      }
+    } catch (histErr) {
+      console.warn('History fetch failed (non-fatal):', histErr.message);
     }
 
     res.json({ fileScores, qualityDefinitions: qualityMap });
@@ -307,16 +351,18 @@ app.get('/api/score/movies', async (req, res) => {
       };
     });
 
-    const movies = await radarrFetch('/movie');
     const fileScores = {};
 
+    // 1. Current movie files
+    const movies = await radarrFetch('/movie');
     for (const movie of movies) {
       if (!movie.movieFile) continue;
       const mf = movie.movieFile;
+      const fileName = basename(mf.path);
       const qualityId = mf.quality?.quality?.id;
       const qualityInfo = qualityMap[qualityId] || { name: 'Unknown', weight: 0 };
 
-      fileScores[mf.path] = {
+      fileScores[fileName] = {
         qualityName: qualityInfo.name,
         qualityWeight: qualityInfo.weight,
         resolution: qualityInfo.resolution,
@@ -327,6 +373,44 @@ app.get('/api/score/movies', async (req, res) => {
         customFormats: mf.customFormats || [],
         customFormatScore: mf.customFormatScore || 0
       };
+    }
+
+    // 2. History (covers files Radarr grabbed but may no longer track)
+    try {
+      let page = 1;
+      const pageSize = 250;
+      let hasMore = true;
+
+      while (hasMore) {
+        const history = await radarrFetch(`/history?page=${page}&pageSize=${pageSize}&sortKey=date&sortDirection=descending&eventType=1`);
+        const records = history.records || [];
+
+        for (const rec of records) {
+          const fileName = rec.sourceTitle;
+          if (!fileName || fileScores[fileName]) continue;
+
+          const qualityId = rec.quality?.quality?.id;
+          const qualityInfo = qualityMap[qualityId] || { name: 'Unknown', weight: 0 };
+
+          fileScores[fileName] = {
+            qualityName: qualityInfo.name,
+            qualityWeight: qualityInfo.weight,
+            resolution: qualityInfo.resolution,
+            source: qualityInfo.source,
+            size: null,
+            movieFileId: null,
+            movieId: rec.movieId,
+            customFormats: rec.customFormats || [],
+            customFormatScore: rec.customFormatScore || 0,
+            fromHistory: true
+          };
+        }
+
+        hasMore = records.length === pageSize && page < 20;
+        page++;
+      }
+    } catch (histErr) {
+      console.warn('Radarr history fetch failed (non-fatal):', histErr.message);
     }
 
     res.json({ fileScores, qualityDefinitions: qualityMap });
