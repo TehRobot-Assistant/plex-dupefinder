@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>plex-dupefinder</Name>
+  <Repository>ghcr.io/tehrobot-assistant/plex-dupefinder:latest</Repository>
+  <Registry>https://github.com/TehRobot-Assistant/plex-dupefinder/pkgs/container/plex-dupefinder</Registry>
+  <Branch>
+    <Tag>latest</Tag>
+    <TagDescription>Latest stable release</TagDescription>
+  </Branch>
+  <Network>bridge</Network>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/TehRobot-Assistant/plex-dupefinder/issues</Support>
+  <Project>https://github.com/TehRobot-Assistant/plex-dupefinder</Project>
+  <Overview>Find and remove duplicate media files in your Plex libraries, scored by Sonarr/Radarr quality profiles.[br][br]Features:[br]- Scans Plex for duplicate episodes and movies[br]- Cross-references Sonarr/Radarr quality scoring[br]- Recommends which file to keep based on quality weight[br]- Delete inferior copies directly from the UI[br]- Shows reclaimable disk space[br][br]Configure Plex, Sonarr and Radarr connections in the Settings page after install.[br][br][b]Source:[/b] https://github.com/TehRobot-Assistant/plex-dupefinder</Overview>
+  <Category>MediaApp:Other Tools:</Category>
+  <WebUI>http://[IP]:[PORT:3000]</WebUI>
+  <Icon>https://raw.githubusercontent.com/TehRobot-Assistant/plex-dupefinder/master/icon.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <DonateText/>
+  <DonateLink/>
+  <Description>Find and remove duplicate media files using Plex detection and Sonarr/Radarr quality scoring.</Description>
+  <Config Name="Web UI Port" Target="3000" Default="3000" Mode="tcp" Description="Port for the web interface" Type="Port" Display="always" Required="true" Mask="false">3000</Config>
+  <Config Name="Appdata" Target="/config" Default="/mnt/user/appdata/plex-dupefinder" Mode="rw" Description="Path for config files (API keys, settings)" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/plex-dupefinder</Config>
+</Container>
