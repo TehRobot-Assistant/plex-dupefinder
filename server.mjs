@@ -61,7 +61,8 @@ async function sonarrDelete(path) {
   const sep = path.includes('?') ? '&' : '?';
   const res = await fetch(`${url}${sep}apikey=${config.sonarr.apiKey}`, { method: 'DELETE' });
   if (!res.ok) throw new Error(`Sonarr DELETE ${res.status}: ${res.statusText}`);
-  return res.status === 204 ? {} : res.json();
+  const text = await res.text();
+  return text ? JSON.parse(text) : {};
 }
 
 async function radarrDelete(path) {
@@ -69,7 +70,8 @@ async function radarrDelete(path) {
   const sep = path.includes('?') ? '&' : '?';
   const res = await fetch(`${url}${sep}apikey=${config.radarr.apiKey}`, { method: 'DELETE' });
   if (!res.ok) throw new Error(`Radarr DELETE ${res.status}: ${res.statusText}`);
-  return res.status === 204 ? {} : res.json();
+  const text = await res.text();
+  return text ? JSON.parse(text) : {};
 }
 
 // ===== Settings API =====
