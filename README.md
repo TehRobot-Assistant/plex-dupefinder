@@ -1,9 +1,17 @@
 # Plex DupeFinder
 
-Find and remove duplicate media files in your Plex libraries, scored by Sonarr/Radarr quality profiles.
+<p align="center">
+  <img src="icon.png" alt="Plex DupeFinder" width="200">
+</p>
 
-![Docker](https://img.shields.io/badge/Docker-Ready-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
+<p align="center">
+  Find and remove duplicate media files in your Plex libraries, scored by Sonarr/Radarr quality profiles.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Docker-Ready-blue" alt="Docker">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+</p>
 
 ## What It Does
 
