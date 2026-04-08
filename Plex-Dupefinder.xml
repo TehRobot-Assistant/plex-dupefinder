@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <Container version="2">
   <Name>Plex-Dupefinder</Name>
-  <Repository>ghcr.io/tehrobot-assistant/plex-dupefinder:latest</Repository>
-  <Registry>https://github.com/TehRobot-Assistant/plex-dupefinder</Registry>
+  <Repository>tehrobot/plex-dupefinder:latest</Repository>
+  <Registry>https://hub.docker.com/r/tehrobot/plex-dupefinder</Registry>
   <Network>bridge</Network>
   <MyIP/>
   <Shell>sh</Shell>
