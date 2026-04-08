@@ -8,29 +8,33 @@
   Find and remove duplicate media files in your Plex libraries, scored by Sonarr/Radarr quality profiles.
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Docker-Ready-blue" alt="Docker">
-  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
-</p>
+---
 
 ## Features
 
-- **Plex duplicate scanning** — finds episodes and movies with multiple file versions
-- **Sonarr/Radarr quality scoring** — uses quality weights, custom format scores, and grab history
-- **Filename matching** — handles different mount points between Plex and Sonarr/Radarr
-- **History fallback** — scores files from Sonarr/Radarr grab history, not just active files
-- **Resolution fallback** — when no Arr score exists, uses Plex resolution (1080p > 720p)
-- **Show grouping** — duplicates grouped by show/movie with collapsible dropdowns
-- **Folder classification** — separates same-folder dupes (safe to clean) from different-folder dupes (review carefully)
-- **Per-show stats** — dupe count and reclaimable space per show
-- **Bulk operations** — checkboxes, select all dupes, show-level select, bulk delete
-- **Sorting** — by name, size, or number of duplicates
-- **Delete via Sonarr/Radarr or Plex** — uses Arr API when available, falls back to Plex API
-- **In-app settings** — configure Plex, Sonarr, and Radarr connections with connection testing
+- Scans Plex for duplicate TV episodes and movies
+- Scores files using Sonarr/Radarr quality weights, custom formats, and grab history
+- Falls back to Plex resolution when no Arr score exists (1080p > 720p > 480p)
+- Handles different mount points between Plex and Sonarr/Radarr (matches by filename)
+- Groups duplicates by show/movie with collapsible dropdowns
+- Separates same-folder dupes (safe to clean) from different-folder dupes (review carefully)
+- Per-show dupe count and reclaimable space
+- Bulk select, select all dupes, show-level select, bulk delete
+- Sort by name, size, or number of duplicates
+- Delete via Sonarr/Radarr API or Plex API fallback
+- In-app settings with connection testing
 
-## Quick Start
+## Installation
 
-### Docker Compose (Recommended)
+### Unraid (Recommended)
+
+1. Go to **Apps** tab and search **TehRobot**
+2. Click the **Docker Hub** button
+3. Find **plex-dupefinder** and click **Install**
+4. Set your port and appdata path
+5. Click **Apply**
+
+### Docker Compose
 
 ```yaml
 services:
@@ -47,10 +51,6 @@ services:
     restart: unless-stopped
 ```
 
-```bash
-docker compose up -d
-```
-
 ### Docker Run
 
 ```bash
@@ -59,15 +59,6 @@ docker run -d \
   -p 3000:3000 \
   -v $(pwd)/config:/config \
   tehrobot/plex-dupefinder:latest
-```
-
-### Run Locally
-
-```bash
-git clone https://github.com/TehRobot-Assistant/plex-dupefinder.git
-cd plex-dupefinder
-npm install
-npm start
 ```
 
 ## Setup
@@ -89,28 +80,9 @@ Each duplicate file is scored in this order:
 4. **Pixel count** — 1920x1080 beats 1280x720
 5. **File size** — last resort tie-breaker
 
-Files are matched by **filename** (not full path), so different mount points between Plex (`/mnt/media/...`) and Sonarr (`/tv/...`) are handled correctly.
+The app also pulls grab history from Sonarr/Radarr, so files that were downloaded but are no longer the active episode file still get scored.
 
-The app also pulls **grab history** from Sonarr/Radarr, so files that were downloaded but are no longer the active episode file still get scored.
-
-The file with the highest combined score is marked **KEEP**. Others are marked **DUPE** with a delete button.
-
-## Unraid Installation
-
-### Option A: Search Docker Hub
-
-1. Go to **Apps** tab and search **TehRobot**
-2. Find **plex-dupefinder** and click **Install**
-3. Set your port and appdata path
-4. Click **Apply**
-
-### Option B: Docker Tab (Manual)
-
-1. Go to **Docker** > **Add Container**
-2. Repository: `tehrobot/plex-dupefinder:latest`
-3. Port: `3000` > `3000`
-4. Path: `/config` > `/mnt/user/appdata/plex-dupefinder`
-5. Click **Apply**
+The best file is marked **KEEP**. Others are marked **DUPE** with a delete button.
 
 ## Finding Your Plex Token
 
@@ -125,15 +97,10 @@ The file with the highest combined score is marked **KEEP**. Others are marked *
 | `PORT` | `3000` | Web UI port |
 | `CONFIG_PATH` | `/config` | Where settings are stored |
 
-## Docker Hub
+## Links
 
-Available on Docker Hub: [tehrobot/plex-dupefinder](https://hub.docker.com/r/tehrobot/plex-dupefinder)
-
-## Tech Stack
-
-- Node.js + Express
-- Vanilla JS frontend (no build step)
-- Plex API, Sonarr API v3, Radarr API v3
+- [Docker Hub](https://hub.docker.com/r/tehrobot/plex-dupefinder)
+- [GitHub](https://github.com/TehRobot-Assistant/plex-dupefinder)
 
 ## License
 
